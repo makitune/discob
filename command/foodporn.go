@@ -9,17 +9,17 @@ import (
 )
 
 const (
-	dfk = "food porrn"
+	dfk = "food porn"
 	dfm = "Take it easy"
 )
 
-func (cfg *Config) FoodPorrn(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if len(cfg.Command.FoodPorrn.Trg) == 0 {
+func (cfg *Config) FoodPorn(s *discordgo.Session, m *discordgo.MessageCreate) {
+	if len(cfg.Command.FoodPorn.Trg) == 0 {
 		errr.Printf("No configuration")
 		return
 	}
 
-	for _, trg := range cfg.Command.FoodPorrn.Trg {
+	for _, trg := range cfg.Command.FoodPorn.Trg {
 		if strings.Contains(m.Content, trg) {
 			user := m.Author
 			if user.Username == cfg.Discord.UserName || user.Bot {
@@ -32,13 +32,13 @@ func (cfg *Config) FoodPorrn(s *discordgo.Session, m *discordgo.MessageCreate) {
 				return
 			}
 
-			msg, err := cfg.foodPorrnMessage()
+			msg, err := cfg.foodPornMessage()
 			if err != nil {
 				msg = dfm
 			}
 			sendMessage(s, c, msg)
 
-			kw, err := cfg.foodPorrnKeyword()
+			kw, err := cfg.foodPornKeyword()
 			if err != nil {
 				kw = dfk
 			}
@@ -86,7 +86,7 @@ func (cfg *Config) HeadsUp(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 					msg := u.Mention() + "、あなた疲れてるのよ\n"
 					sendMessage(s, c, msg)
 
-					kw, err := cfg.foodPorrnKeyword()
+					kw, err := cfg.foodPornKeyword()
 					if err != nil {
 						kw = dfk
 					}

@@ -17,8 +17,8 @@ type Config struct {
 	} `json:"discord"`
 	Search  search.Config `json:"cse"`
 	Command struct {
-		FoodPorrn BotCommand `json:"foodPorrn"`
-		Welcome   BotCommand `json:"welcome"`
+		FoodPorn BotCommand `json:"foodPorn"`
+		Welcome  BotCommand `json:"welcome"`
 	} `json:"command"`
 }
 
@@ -64,12 +64,12 @@ func (cfg *Config) sendImage(s *discordgo.Session, c *discordgo.Channel, keyword
 	}
 }
 
-func (cfg *Config) foodPorrnKeyword() (string, error) {
-	return any(cfg.Command.FoodPorrn.Kws)
+func (cfg *Config) foodPornKeyword() (string, error) {
+	return any(cfg.Command.FoodPorn.Kws)
 }
 
-func (cfg *Config) foodPorrnMessage() (string, error) {
-	return any(cfg.Command.FoodPorrn.Msgs)
+func (cfg *Config) foodPornMessage() (string, error) {
+	return any(cfg.Command.FoodPorn.Msgs)
 }
 
 func (cfg *Config) WelcomeKeyword() (string, error) {

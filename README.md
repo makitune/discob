@@ -27,12 +27,12 @@ Create `config.json` file and specifies it at execute using this template:
         "key": "API key"
     },
     "command": {
-        "foodporrn": {
+        "foodporn": {
             "trigger": [
                 "tired"
             ],
             "keywords": [
-                "food porrn"
+                "food porn"
             ],
             "messages": [
                 "cheer up"

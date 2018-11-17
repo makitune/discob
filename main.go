@@ -50,7 +50,7 @@ func main() {
 
 	bot.Token = cfg.Discord.Token
 	bot.AddHandler(cfg.Alola)
-	bot.AddHandler(cfg.FoodPorrn)
+	bot.AddHandler(cfg.FoodPorn)
 	bot.AddHandler(cfg.HeadsUp)
 	bot.AddHandler(cfg.Welcome)
 
