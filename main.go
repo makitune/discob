@@ -1,7 +1,6 @@
 package main
 
 import (
-	"discord-bot/command"
 	"encoding/json"
 	"flag"
 	"io/ioutil"
@@ -9,6 +8,7 @@ import (
 	"os"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/makitune/discob/command"
 )
 
 var (

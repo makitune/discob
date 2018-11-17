@@ -1,9 +1,8 @@
 package command
 
 import (
-	"discord-bot/errr"
-
 	"github.com/bwmarrin/discordgo"
+	"github.com/makitune/discob/errr"
 )
 
 const dwm = "Welcome to "

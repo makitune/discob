@@ -1,11 +1,11 @@
 package command
 
 import (
-	"discord-bot/errr"
 	"strings"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/makitune/discob/errr"
 )
 
 const (

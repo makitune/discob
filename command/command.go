@@ -1,13 +1,13 @@
 package command
 
 import (
-	"discord-bot/command/search"
-	"discord-bot/errr"
 	"errors"
 	"math/rand"
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/makitune/discob/command/search"
+	"github.com/makitune/discob/errr"
 )
 
 type Config struct {

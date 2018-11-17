@@ -1,10 +1,10 @@
 package command
 
 import (
-	"discord-bot/errr"
 	"math/rand"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/makitune/discob/errr"
 )
 
 var pokemons = []string{
