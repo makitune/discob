@@ -27,6 +27,7 @@ Create `config.json` file and specifies it at execute using this template:
         "key": "API key"
     },
     "command": {
+        "errormessage": "something bad happened",
         "foodporn": {
             "messages": [
                 "cheer up"

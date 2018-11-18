@@ -10,6 +10,8 @@ import (
 	"github.com/makitune/discob/errr"
 )
 
+const dem = "Something bad happened"
+
 type Config struct {
 	Discord struct {
 		UserName string `json:"username"`
@@ -17,8 +19,9 @@ type Config struct {
 	} `json:"discord"`
 	Search  search.Config `json:"cse"`
 	Command struct {
-		FoodPorn BotCommand `json:"foodPorn"`
-		Welcome  BotCommand `json:"welcome"`
+		ErrorMessage string
+		FoodPorn     BotCommand `json:"foodPorn"`
+		Welcome      BotCommand `json:"welcome"`
 	} `json:"command"`
 }
 
@@ -38,12 +41,15 @@ func sendMessage(s *discordgo.Session, c *discordgo.Channel, msg string) {
 	}
 }
 
-func sendErrorMessage(s *discordgo.Session, c *discordgo.Channel, err error) {
+func (cfg *Config) sendErrorMessage(s *discordgo.Session, c *discordgo.Channel, err error) {
 	if err != nil {
 		errr.Printf("%s\n", err)
 	}
 
-	msg := "反応がない。。ただの屍のようだ・・・"
+	msg := cfg.Command.ErrorMessage
+	if len(msg) == 0 {
+		msg = dem
+	}
 	_, err = s.ChannelMessageSend(c.ID, msg)
 	if err != nil {
 		errr.Printf("%s\n", err)
@@ -53,7 +59,7 @@ func sendErrorMessage(s *discordgo.Session, c *discordgo.Channel, err error) {
 func (cfg *Config) sendImage(s *discordgo.Session, c *discordgo.Channel, keyword string) {
 	me, err := search.SearchImage(keyword, cfg.Search)
 	if err != nil {
-		sendErrorMessage(s, c, err)
+		cfg.sendErrorMessage(s, c, err)
 		return
 	}
 
