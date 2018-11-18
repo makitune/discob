@@ -72,7 +72,7 @@ func (cfg *Config) foodPornMessage() (string, error) {
 	return any(cfg.Command.FoodPorn.Messages)
 }
 
-func (cfg *Config) WelcomeKeyword() (string, error) {
+func (cfg *Config) welcomeKeyword() (string, error) {
 	return any(cfg.Command.Welcome.Keywords)
 }
 
