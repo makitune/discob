@@ -1,6 +1,7 @@
 package command
 
 import (
+	"math/rand"
 	"strings"
 	"time"
 
@@ -9,17 +10,27 @@ import (
 )
 
 const (
-	dfk = "food porn"
 	dfm = "Take it easy"
 )
 
-func (cfg *Config) FoodPorn(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if len(cfg.Command.FoodPorn.Trg) == 0 {
-		errr.Printf("No configuration")
-		return
+var (
+	fptrg = []string{
+		"疲",
+		"つかれ",
 	}
+	fpkws = []string{
+		"飯テロ",
+		"飯テロ 肉",
+		"飯テロ 刺身",
+		"飯テロ ステーキ",
+		"飯テロ ラーメン",
+		"飯テロ ジャンクフード",
+		"飯テロ スイーツ",
+	}
+)
 
-	for _, trg := range cfg.Command.FoodPorn.Trg {
+func (cfg *Config) FoodPorn(s *discordgo.Session, m *discordgo.MessageCreate) {
+	for _, trg := range fptrg {
 		if strings.Contains(m.Content, trg) {
 			user := m.Author
 			if user.Username == cfg.Discord.UserName || user.Bot {
@@ -38,11 +49,8 @@ func (cfg *Config) FoodPorn(s *discordgo.Session, m *discordgo.MessageCreate) {
 			}
 			sendMessage(s, c, msg)
 
-			kw, err := cfg.foodPornKeyword()
-			if err != nil {
-				kw = dfk
-			}
-			cfg.sendImage(s, c, kw)
+			max := len(fpkws)
+			cfg.sendImage(s, c, fpkws[rand.Intn(max)])
 			return
 		}
 	}
@@ -86,11 +94,8 @@ func (cfg *Config) HeadsUp(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 					msg := u.Mention() + "、あなた疲れてるのよ\n"
 					sendMessage(s, c, msg)
 
-					kw, err := cfg.foodPornKeyword()
-					if err != nil {
-						kw = dfk
-					}
-					cfg.sendImage(s, c, kw)
+					max := len(fpkws)
+					cfg.sendImage(s, c, fpkws[rand.Intn(max)])
 				}
 			}
 		}

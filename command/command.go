@@ -23,9 +23,8 @@ type Config struct {
 }
 
 type BotCommand struct {
-	Trg  []string `json:"trigger"`
-	Kws  []string `json:"keywords"`
-	Msgs []string `json:"messages"`
+	Keywords []string `json:"keywords"`
+	Messages []string `json:"messages"`
 }
 
 func init() {
@@ -64,20 +63,16 @@ func (cfg *Config) sendImage(s *discordgo.Session, c *discordgo.Channel, keyword
 	}
 }
 
-func (cfg *Config) foodPornKeyword() (string, error) {
-	return any(cfg.Command.FoodPorn.Kws)
-}
-
 func (cfg *Config) foodPornMessage() (string, error) {
-	return any(cfg.Command.FoodPorn.Msgs)
+	return any(cfg.Command.FoodPorn.Messages)
 }
 
-func (cfg *Config) WelcomeKeyword() (string, error) {
-	return any(cfg.Command.Welcome.Kws)
+func (cfg *Config) welcomeKeyword() (string, error) {
+	return any(cfg.Command.Welcome.Keywords)
 }
 
 func (cfg *Config) welcomeMessage() (string, error) {
-	return any(cfg.Command.Welcome.Msgs)
+	return any(cfg.Command.Welcome.Messages)
 }
 
 func any(target []string) (string, error) {

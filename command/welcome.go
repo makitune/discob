@@ -28,7 +28,7 @@ func (cfg *Config) Welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 			msg := p.User.Mention() + "\t" + wm
 			sendMessage(s, c, msg)
 
-			wk, err := cfg.WelcomeKeyword()
+			wk, err := cfg.welcomeKeyword()
 			if err != nil {
 				return
 			}

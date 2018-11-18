@@ -28,12 +28,6 @@ Create `config.json` file and specifies it at execute using this template:
     },
     "command": {
         "foodporn": {
-            "trigger": [
-                "tired"
-            ],
-            "keywords": [
-                "food porn"
-            ],
             "messages": [
                 "cheer up"
             ]
