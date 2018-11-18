@@ -17,8 +17,9 @@ type Config struct {
 	} `json:"discord"`
 	Search  search.Config `json:"cse"`
 	Command struct {
-		FoodPorn BotCommand `json:"foodPorn"`
-		Welcome  BotCommand `json:"welcome"`
+		ErrorMessage string
+		FoodPorn     BotCommand `json:"foodPorn"`
+		Welcome      BotCommand `json:"welcome"`
 	} `json:"command"`
 }
 
