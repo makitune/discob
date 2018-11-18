@@ -10,7 +10,7 @@ import (
 	"github.com/makitune/discob/errr"
 )
 
-const dem = "Something bad happened."
+const dem = "Something bad happened"
 
 type Config struct {
 	Discord struct {
