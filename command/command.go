@@ -39,12 +39,12 @@ func sendMessage(s *discordgo.Session, c *discordgo.Channel, msg string) {
 	}
 }
 
-func sendErrorMessage(s *discordgo.Session, c *discordgo.Channel, err error) {
+func (cfg *Config) sendErrorMessage(s *discordgo.Session, c *discordgo.Channel, err error) {
 	if err != nil {
 		errr.Printf("%s\n", err)
 	}
 
-	msg := "反応がない。。ただの屍のようだ・・・"
+	msg := cfg.Command.ErrorMessage
 	_, err = s.ChannelMessageSend(c.ID, msg)
 	if err != nil {
 		errr.Printf("%s\n", err)
@@ -54,7 +54,7 @@ func sendErrorMessage(s *discordgo.Session, c *discordgo.Channel, err error) {
 func (cfg *Config) sendImage(s *discordgo.Session, c *discordgo.Channel, keyword string) {
 	me, err := search.SearchImage(keyword, cfg.Search)
 	if err != nil {
-		sendErrorMessage(s, c, err)
+		cfg.sendErrorMessage(s, c, err)
 		return
 	}
 
