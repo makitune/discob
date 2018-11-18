@@ -14,12 +14,12 @@ const (
 )
 
 func (cfg *Config) FoodPorn(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if len(cfg.Command.FoodPorn.Trg) == 0 {
+	if len(cfg.Command.FoodPorn.Trigger) == 0 {
 		errr.Printf("No configuration")
 		return
 	}
 
-	for _, trg := range cfg.Command.FoodPorn.Trg {
+	for _, trg := range cfg.Command.FoodPorn.Trigger {
 		if strings.Contains(m.Content, trg) {
 			user := m.Author
 			if user.Username == cfg.Discord.UserName || user.Bot {
