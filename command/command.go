@@ -10,6 +10,8 @@ import (
 	"github.com/makitune/discob/errr"
 )
 
+const dem = "Something bad happened."
+
 type Config struct {
 	Discord struct {
 		UserName string `json:"username"`
@@ -45,6 +47,9 @@ func (cfg *Config) sendErrorMessage(s *discordgo.Session, c *discordgo.Channel, 
 	}
 
 	msg := cfg.Command.ErrorMessage
+	if len(msg) == 0 {
+		msg = dem
+	}
 	_, err = s.ChannelMessageSend(c.ID, msg)
 	if err != nil {
 		errr.Printf("%s\n", err)
