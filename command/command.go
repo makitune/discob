@@ -23,7 +23,6 @@ type Config struct {
 }
 
 type BotCommand struct {
-	Trigger  []string `json:"trigger"`
 	Keywords []string `json:"keywords"`
 	Messages []string `json:"messages"`
 }
@@ -62,10 +61,6 @@ func (cfg *Config) sendImage(s *discordgo.Session, c *discordgo.Channel, keyword
 	if err != nil {
 		errr.Printf("%s\n", err)
 	}
-}
-
-func (cfg *Config) foodPornKeyword() (string, error) {
-	return any(cfg.Command.FoodPorn.Keywords)
 }
 
 func (cfg *Config) foodPornMessage() (string, error) {
