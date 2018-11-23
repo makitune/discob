@@ -33,6 +33,11 @@ Create `config.json` file and specifies it at execute using this template:
                 "cheer up"
             ]
         },
+        "headsup": {
+			"messages": [
+				"time to eat"
+			]
+		},
         "welcome": {
             "keywords": [
                 "welcome"

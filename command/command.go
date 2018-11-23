@@ -66,6 +66,10 @@ func (bot *Bot) foodPornMessage() (string, error) {
 	return any(bot.config.Command.FoodPorn.Messages)
 }
 
+func (bot *Bot) headsUpMessage() (string, error) {
+	return any(bot.config.Command.HeadsUp.Messages)
+}
+
 func (bot *Bot) welcomeKeyword() (string, error) {
 	return any(bot.config.Command.Welcome.Keywords)
 }

@@ -43,7 +43,11 @@ func (bot *Bot) HeadsUp(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 						return
 					}
 
-					msg := u.Mention() + "、あなた疲れてるのよ\n"
+					msg := u.Mention()
+					if m, err := bot.headsUpMessage(); err == nil {
+						msg = msg + "\t" + m
+					}
+
 					sendMessage(s, c, msg)
 
 					max := len(fpkws)

@@ -9,6 +9,7 @@ type Config struct {
 	Command struct {
 		ErrorMessage string
 		FoodPorn     Command `json:"foodporn"`
+		HeadsUp      Command `json:"headsup"`
 		Welcome      Command `json:"welcome"`
 	} `json:"command"`
 }
