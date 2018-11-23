@@ -44,16 +44,17 @@ func main() {
 		log.Fatalln(err)
 	}
 
+	bot := command.New(cfg)
 	s, err := discordgo.New()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
 	s.Token = cfg.Discord.Token
-	s.AddHandler(cfg.Alola)
-	s.AddHandler(cfg.FoodPorn)
-	s.AddHandler(cfg.HeadsUp)
-	s.AddHandler(cfg.Welcome)
+	s.AddHandler(bot.Alola)
+	s.AddHandler(bot.FoodPorn)
+	s.AddHandler(bot.HeadsUp)
+	s.AddHandler(bot.Welcome)
 
 	lock := make(chan error)
 	err = s.Open()
