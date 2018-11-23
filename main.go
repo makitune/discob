@@ -9,6 +9,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/makitune/discob/command"
+	"github.com/makitune/discob/config"
 )
 
 var (
@@ -37,7 +38,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	var cfg command.Config
+	var cfg config.Config
 	err = json.Unmarshal(data, &cfg)
 	if err != nil {
 		log.Fatalln(err)

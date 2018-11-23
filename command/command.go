@@ -12,23 +12,7 @@ import (
 
 const dem = "Something bad happened"
 
-type Config struct {
-	Discord struct {
-		UserName string `json:"username"`
-		Token    string `json:"token"`
-	} `json:"discord"`
-	Search  search.Config `json:"cse"`
-	Command struct {
-		ErrorMessage string
-		FoodPorn     BotCommand `json:"foodPorn"`
-		Welcome      BotCommand `json:"welcome"`
-	} `json:"command"`
-}
 
-type BotCommand struct {
-	Keywords []string `json:"keywords"`
-	Messages []string `json:"messages"`
-}
 
 func init() {
 	rand.Seed(time.Now().UnixNano())
