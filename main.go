@@ -9,6 +9,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/makitune/discob/command"
+	"github.com/makitune/discob/config"
 )
 
 var (
@@ -37,25 +38,26 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	var cfg command.Config
+	var cfg config.Config
 	err = json.Unmarshal(data, &cfg)
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	bot, err := discordgo.New()
+	bot := command.New(cfg)
+	s, err := discordgo.New()
 	if err != nil {
 		log.Fatalln(err)
 	}
 
-	bot.Token = cfg.Discord.Token
-	bot.AddHandler(cfg.Alola)
-	bot.AddHandler(cfg.FoodPorn)
-	bot.AddHandler(cfg.HeadsUp)
-	bot.AddHandler(cfg.Welcome)
+	s.Token = cfg.Discord.Token
+	s.AddHandler(bot.Alola)
+	s.AddHandler(bot.FoodPorn)
+	s.AddHandler(bot.HeadsUp)
+	s.AddHandler(bot.Welcome)
 
 	lock := make(chan error)
-	err = bot.Open()
+	err = s.Open()
 	if err != nil {
 		log.Fatalln(err)
 	}

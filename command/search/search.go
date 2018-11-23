@@ -9,14 +9,10 @@ import (
 	"strconv"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/makitune/discob/config"
 )
 
-type Config struct {
-	Key string `json:"key"`
-	Cx  string `json:"id"`
-}
-
-func SearchImage(keyword string, cfg Config) (*discordgo.MessageEmbed, error) {
+func SearchImage(keyword string, cfg config.Search) (*discordgo.MessageEmbed, error) {
 	query := url.Values{}
 	num := 10
 	query.Add("key", cfg.Key)

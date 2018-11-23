@@ -7,7 +7,7 @@ import (
 
 const dwm = "Welcome to "
 
-func (cfg *Config) Welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
+func (bot *Bot) Welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 	if string(p.Status) != "online" {
 		return
 	}
@@ -20,7 +20,7 @@ func (cfg *Config) Welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 
 	for _, c := range g.Channels {
 		if c.Type == 0 && c.Position == 0 {
-			wm, err := cfg.welcomeMessage()
+			wm, err := bot.welcomeMessage()
 			if err != nil {
 				wm = dwm + g.Name
 			}
@@ -28,11 +28,11 @@ func (cfg *Config) Welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 			msg := p.User.Mention() + "\t" + wm
 			sendMessage(s, c, msg)
 
-			wk, err := cfg.welcomeKeyword()
+			wk, err := bot.welcomeKeyword()
 			if err != nil {
 				return
 			}
-			cfg.sendImage(s, c, wk)
+			bot.sendImage(s, c, wk)
 		}
 	}
 }

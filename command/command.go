@@ -7,27 +7,20 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/makitune/discob/command/search"
+	"github.com/makitune/discob/config"
 	"github.com/makitune/discob/errr"
 )
 
 const dem = "Something bad happened"
 
-type Config struct {
-	Discord struct {
-		UserName string `json:"username"`
-		Token    string `json:"token"`
-	} `json:"discord"`
-	Search  search.Config `json:"cse"`
-	Command struct {
-		ErrorMessage string
-		FoodPorn     BotCommand `json:"foodPorn"`
-		Welcome      BotCommand `json:"welcome"`
-	} `json:"command"`
+type Bot struct {
+	config config.Config
 }
 
-type BotCommand struct {
-	Keywords []string `json:"keywords"`
-	Messages []string `json:"messages"`
+func New(cfg config.Config) (bot *Bot) {
+	return &Bot{
+		config: cfg,
+	}
 }
 
 func init() {
@@ -41,12 +34,12 @@ func sendMessage(s *discordgo.Session, c *discordgo.Channel, msg string) {
 	}
 }
 
-func (cfg *Config) sendErrorMessage(s *discordgo.Session, c *discordgo.Channel, err error) {
+func (bot *Bot) sendErrorMessage(s *discordgo.Session, c *discordgo.Channel, err error) {
 	if err != nil {
 		errr.Printf("%s\n", err)
 	}
 
-	msg := cfg.Command.ErrorMessage
+	msg := bot.config.Command.ErrorMessage
 	if len(msg) == 0 {
 		msg = dem
 	}
@@ -56,10 +49,10 @@ func (cfg *Config) sendErrorMessage(s *discordgo.Session, c *discordgo.Channel, 
 	}
 }
 
-func (cfg *Config) sendImage(s *discordgo.Session, c *discordgo.Channel, keyword string) {
-	me, err := search.SearchImage(keyword, cfg.Search)
+func (bot *Bot) sendImage(s *discordgo.Session, c *discordgo.Channel, keyword string) {
+	me, err := search.SearchImage(keyword, bot.config.Search)
 	if err != nil {
-		cfg.sendErrorMessage(s, c, err)
+		bot.sendErrorMessage(s, c, err)
 		return
 	}
 
@@ -69,16 +62,16 @@ func (cfg *Config) sendImage(s *discordgo.Session, c *discordgo.Channel, keyword
 	}
 }
 
-func (cfg *Config) foodPornMessage() (string, error) {
-	return any(cfg.Command.FoodPorn.Messages)
+func (bot *Bot) foodPornMessage() (string, error) {
+	return any(bot.config.Command.FoodPorn.Messages)
 }
 
-func (cfg *Config) welcomeKeyword() (string, error) {
-	return any(cfg.Command.Welcome.Keywords)
+func (bot *Bot) welcomeKeyword() (string, error) {
+	return any(bot.config.Command.Welcome.Keywords)
 }
 
-func (cfg *Config) welcomeMessage() (string, error) {
-	return any(cfg.Command.Welcome.Messages)
+func (bot *Bot) welcomeMessage() (string, error) {
+	return any(bot.config.Command.Welcome.Messages)
 }
 
 func any(target []string) (string, error) {

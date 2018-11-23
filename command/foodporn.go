@@ -29,11 +29,11 @@ var (
 	}
 )
 
-func (cfg *Config) FoodPorn(s *discordgo.Session, m *discordgo.MessageCreate) {
+func (bot *Bot) FoodPorn(s *discordgo.Session, m *discordgo.MessageCreate) {
 	for _, trg := range fptrg {
 		if strings.Contains(m.Content, trg) {
 			user := m.Author
-			if user.Username == cfg.Discord.UserName || user.Bot {
+			if user.Username == bot.config.Discord.UserName || user.Bot {
 				return
 			}
 
@@ -43,20 +43,20 @@ func (cfg *Config) FoodPorn(s *discordgo.Session, m *discordgo.MessageCreate) {
 				return
 			}
 
-			msg, err := cfg.foodPornMessage()
+			msg, err := bot.foodPornMessage()
 			if err != nil {
 				msg = dfm
 			}
 			sendMessage(s, c, msg)
 
 			max := len(fpkws)
-			cfg.sendImage(s, c, fpkws[rand.Intn(max)])
+			bot.sendImage(s, c, fpkws[rand.Intn(max)])
 			return
 		}
 	}
 }
 
-func (cfg *Config) HeadsUp(s *discordgo.Session, p *discordgo.PresenceUpdate) {
+func (bot *Bot) HeadsUp(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 	if string(p.Status) != "online" {
 		return
 	}
@@ -95,7 +95,7 @@ func (cfg *Config) HeadsUp(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 					sendMessage(s, c, msg)
 
 					max := len(fpkws)
-					cfg.sendImage(s, c, fpkws[rand.Intn(max)])
+					bot.sendImage(s, c, fpkws[rand.Intn(max)])
 				}
 			}
 		}
