@@ -8,7 +8,7 @@ type Config struct {
 	Search  Search `json:"cse"`
 	Command struct {
 		ErrorMessage string
-		FoodPorn     Command `json:"foodPorn"`
+		FoodPorn     Command `json:"foodporn"`
 		Welcome      Command `json:"welcome"`
 	} `json:"command"`
 }
