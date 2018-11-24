@@ -17,7 +17,6 @@ func (bot *Bot) HeadsUp(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 }
 
 func headsup(s *discordgo.Session, p *discordgo.PresenceUpdate, b *Bot) {
-	u := p.User
 	g, err := s.Guild(p.GuildID)
 	if err != nil {
 		errr.Printf("%s\n", err)
@@ -37,6 +36,7 @@ func headsup(s *discordgo.Session, p *discordgo.PresenceUpdate, b *Bot) {
 	}
 
 	t := time.NewTicker(1 * time.Hour)
+	u := p.User
 	for {
 		<-t.C
 		for _, p := range g.Presences {
