@@ -9,7 +9,7 @@ import (
 )
 
 func (bot *Bot) HeadsUp(s *discordgo.Session, p *discordgo.PresenceUpdate) {
-	if string(p.Status) != "online" {
+	if p.Status != discordgo.StatusOnline {
 		return
 	}
 
@@ -26,7 +26,7 @@ func headsup(s *discordgo.Session, p *discordgo.PresenceUpdate, b *Bot) {
 
 	var c *discordgo.Channel
 	for _, ch := range g.Channels {
-		if ch.Type == 0 && ch.Position == 0 {
+		if ch.Type == discordgo.ChannelTypeGuildText && ch.Position == 0 {
 			c = ch
 		}
 	}
@@ -41,7 +41,7 @@ func headsup(s *discordgo.Session, p *discordgo.PresenceUpdate, b *Bot) {
 		for _, p := range g.Presences {
 			id := p.User.ID
 			if id == u.ID {
-				if string(p.Status) != "online" {
+				if p.Status != discordgo.StatusOnline {
 					t.Stop()
 					return
 				}

@@ -8,7 +8,7 @@ import (
 const dwm = "Welcome to "
 
 func (bot *Bot) Welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
-	if string(p.Status) != "online" {
+	if p.Status != discordgo.StatusOnline {
 		return
 	}
 
