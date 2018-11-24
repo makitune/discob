@@ -28,6 +28,7 @@ func headsup(s *discordgo.Session, p *discordgo.PresenceUpdate, b *Bot) {
 	for _, ch := range g.Channels {
 		if ch.Type == discordgo.ChannelTypeGuildText && ch.Position == 0 {
 			c = ch
+			break
 		}
 	}
 
