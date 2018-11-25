@@ -18,34 +18,26 @@ Create `config.json` file and specifies it at execute using this template:
 
 ```json
 {
-    "discord": {
-        "username": "Bot Name",
-        "token": "Bot Token"
+  "discord": {
+    "username": "Bot Name",
+    "token": "Bot Token"
+  },
+  "cse": {
+    "id": "Search engine ID",
+    "key": "API key"
+  },
+  "command": {
+    "errormessage": "something bad happened",
+    "foodporn": {
+      "messages": ["cheer up"]
     },
-    "cse": {
-        "id": "Search engine ID",
-        "key": "API key"
+    "headsup": {
+      "messages": ["time to eat"]
     },
-    "command": {
-        "errormessage": "something bad happened",
-        "foodporn": {
-            "messages": [
-                "cheer up"
-            ]
-        },
-        "headsup": {
-			"messages": [
-				"time to eat"
-			]
-		},
-        "welcome": {
-            "keywords": [
-                "welcome"
-            ],
-            "messages": [
-                "welcome back"
-            ]
-        }
+    "welcome": {
+      "keywords": ["welcome"],
+      "messages": ["welcome back"]
     }
+  }
 }
 ```
