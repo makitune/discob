@@ -8,11 +8,15 @@ import (
 const dwm = "Welcome to "
 
 func (bot *Bot) Welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
-	if p.Status != discordgo.StatusOnline {
-		return
+	lc := bot.loginChans[p.User.ID]
+	if p.Status == discordgo.StatusOnline && lc == nil {
+		lc = make(chan struct{})
+		bot.welcome(s, p)
 	}
 
-	bot.welcome(s, p)
+	if p.Status == discordgo.StatusOffline && lc != nil {
+		delete(bot.loginChans, p.User.ID)
+	}
 }
 
 func (bot *Bot) welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
