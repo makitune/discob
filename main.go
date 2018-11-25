@@ -53,7 +53,6 @@ func main() {
 	s.Token = cfg.Discord.Token
 	s.AddHandler(bot.Alola)
 	s.AddHandler(bot.FoodPorn)
-	s.AddHandler(bot.HeadsUp)
 	s.AddHandler(bot.Welcome)
 
 	lock := make(chan error)

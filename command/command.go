@@ -14,12 +14,14 @@ import (
 const dem = "Something bad happened"
 
 type Bot struct {
-	config config.Config
+	config     config.Config
+	loginChans map[string]chan struct{}
 }
 
 func New(cfg config.Config) (bot *Bot) {
 	return &Bot{
-		config: cfg,
+		config:     cfg,
+		loginChans: make(map[string]chan struct{}),
 	}
 }
 
@@ -64,6 +66,10 @@ func (bot *Bot) sendImage(s *discordgo.Session, c *discordgo.Channel, keyword st
 
 func (bot *Bot) foodPornMessage() (string, error) {
 	return any(bot.config.Command.FoodPorn.Messages)
+}
+
+func (bot *Bot) headsUpMessage() (string, error) {
+	return any(bot.config.Command.HeadsUp.Messages)
 }
 
 func (bot *Bot) welcomeKeyword() (string, error) {
