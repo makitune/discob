@@ -12,6 +12,10 @@ func (bot *Bot) Welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 		return
 	}
 
+	bot.welcome(s, p)
+}
+
+func (bot *Bot) welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 	g, err := s.Guild(p.GuildID)
 	if err != nil {
 		errr.Printf("%s\n", err)
