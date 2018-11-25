@@ -19,6 +19,7 @@ func (bot *Bot) Welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 	}
 
 	if p.Status == discordgo.StatusOffline && lc != nil {
+		lc <- struct{}{}
 		delete(bot.loginChans, p.User.ID)
 	}
 }
@@ -71,26 +72,22 @@ func (bot *Bot) headsup(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 
 	t := time.NewTicker(1 * time.Hour)
 	u := p.User
+	lc := bot.loginChans[u.ID]
+
 	for {
-		<-t.C
-		for _, p := range g.Presences {
-			id := p.User.ID
-			if id == u.ID {
-				if p.Status != discordgo.StatusOnline {
-					t.Stop()
-					return
-				}
-
-				msg := u.Mention()
-				if m, err := bot.headsUpMessage(); err == nil {
-					msg = msg + "\t" + m
-				}
-
-				sendMessage(s, c, msg)
-
-				max := len(fpkws)
-				bot.sendImage(s, c, fpkws[rand.Intn(max)])
+		select {
+		case <-t.C:
+			msg := u.Mention()
+			if m, err := bot.headsUpMessage(); err == nil {
+				msg = msg + "\t" + m
 			}
+
+			sendMessage(s, c, msg)
+
+			max := len(fpkws)
+			bot.sendImage(s, c, fpkws[rand.Intn(max)])
+		case <-lc:
+			return
 		}
 	}
 }
