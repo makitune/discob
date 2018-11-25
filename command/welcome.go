@@ -13,7 +13,7 @@ const dwm = "Welcome to "
 func (bot *Bot) Welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 	lc := bot.loginChans[p.User.ID]
 	if p.Status == discordgo.StatusOnline && lc == nil {
-		lc = make(chan struct{})
+		bot.loginChans[p.User.ID] = make(chan struct{})
 		bot.welcome(s, p)
 		bot.headsup(s, p)
 	}
