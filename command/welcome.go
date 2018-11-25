@@ -31,7 +31,7 @@ func (bot *Bot) welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 	}
 
 	for _, c := range g.Channels {
-		if c.Type == 0 && c.Position == 0 {
+		if c.Type == discordgo.ChannelTypeGuildText && c.Position == 0 {
 			wm, err := bot.welcomeMessage()
 			if err != nil {
 				wm = dwm + g.Name
@@ -45,6 +45,7 @@ func (bot *Bot) welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 				return
 			}
 			bot.sendImage(s, c, wk)
+			break
 		}
 	}
 }
