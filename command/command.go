@@ -14,12 +14,14 @@ import (
 const dem = "Something bad happened"
 
 type Bot struct {
-	config config.Config
+	config     config.Config
+	loginChans map[string]chan struct{}
 }
 
 func New(cfg config.Config) (bot *Bot) {
 	return &Bot{
-		config: cfg,
+		config:     cfg,
+		loginChans: make(map[string]chan struct{}),
 	}
 }
 
