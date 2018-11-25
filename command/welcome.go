@@ -1,6 +1,7 @@
 package command
 
 import (
+	"errors"
 	"math/rand"
 	"time"
 
@@ -31,24 +32,25 @@ func (bot *Bot) welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 		return
 	}
 
-	for _, c := range g.Channels {
-		if c.Type == discordgo.ChannelTypeGuildText && c.Position == 0 {
-			wm, err := bot.welcomeMessage()
-			if err != nil {
-				wm = dwm + g.Name
-			}
-
-			msg := p.User.Mention() + "\t" + wm
-			sendMessage(s, c, msg)
-
-			wk, err := bot.welcomeKeyword()
-			if err != nil {
-				return
-			}
-			bot.sendImage(s, c, wk)
-			break
-		}
+	c, err := topTextChannel(g)
+	if err != nil {
+		errr.Printf("%s\n", err)
+		return
 	}
+
+	wm, err := bot.welcomeMessage()
+	if err != nil {
+		wm = dwm + g.Name
+	}
+
+	msg := p.User.Mention() + "\t" + wm
+	sendMessage(s, c, msg)
+
+	wk, err := bot.welcomeKeyword()
+	if err != nil {
+		return
+	}
+	bot.sendImage(s, c, wk)
 }
 
 func (bot *Bot) headsup(s *discordgo.Session, p *discordgo.PresenceUpdate) {
@@ -58,15 +60,9 @@ func (bot *Bot) headsup(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 		return
 	}
 
-	var c *discordgo.Channel
-	for _, ch := range g.Channels {
-		if ch.Type == discordgo.ChannelTypeGuildText && ch.Position == 0 {
-			c = ch
-			break
-		}
-	}
-
-	if c == nil {
+	c, err := topTextChannel(g)
+	if err != nil {
+		errr.Printf("%s\n", err)
 		return
 	}
 
@@ -90,4 +86,14 @@ func (bot *Bot) headsup(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 			return
 		}
 	}
+}
+
+func topTextChannel(guild *discordgo.Guild) (*discordgo.Channel, error) {
+	for _, c := range guild.Channels {
+		if c.Type == discordgo.ChannelTypeGuildText && c.Position == 0 {
+			return c, nil
+		}
+	}
+
+	return nil, errors.New("Text Channel not found")
 }
