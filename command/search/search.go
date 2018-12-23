@@ -38,7 +38,7 @@ func SearchImage(keyword string, cfg config.Search) (*discordgo.MessageEmbed, er
 		return nil, err
 	}
 
-	resp := new(Response)
+	resp := new(customSearchResponse)
 	err = json.Unmarshal(body, resp)
 	if err != nil {
 		return nil, err
