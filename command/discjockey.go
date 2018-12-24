@@ -45,6 +45,11 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if len(y.FilePath) == 0 {
 			return
 		}
+
+		if bot.stopChan != nil {
+			*bot.stopChan <- true
+			bot.stopChan = nil
+		}
 		bot.stopChan = new(chan bool)
 		dgvoice.PlayAudioFile(bot.voiceConnection, y.FilePath, *bot.stopChan)
 	}
