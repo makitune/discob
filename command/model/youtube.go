@@ -6,6 +6,7 @@ type Youtube struct {
 	Title       string
 	Description string
 	VideoID     string
+	FilePath    string
 }
 
 func (y *Youtube) UrlString() string {

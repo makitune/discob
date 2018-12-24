@@ -138,6 +138,7 @@ func DownloadMusic(y *model.Youtube, cfg config.Search) error {
 		return err
 	}
 
+	y.FilePath = path
 	return nil
 }
 
