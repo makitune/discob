@@ -20,6 +20,7 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if !bot.isMentioned(m) {
 		return
 	}
+
 	start := strings.Index(m.Content, "<")
 	end := strings.Index(m.Content, ">")
 	keyword := m.Content[:start] + m.Content[end+1:]
@@ -37,18 +38,4 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 
 	msg := strings.Join([]string{y.Title, y.Description, y.UrlString()}, "\n")
 	sendMessage(s, c, msg)
-}
-
-func (bot *Bot) isMentioned(m *discordgo.MessageCreate) bool {
-	if len(m.Mentions) == 0 {
-		return false
-	}
-
-	for _, mu := range m.Mentions {
-		if mu.Username == bot.config.Discord.UserName {
-			return true
-		}
-	}
-
-	return false
 }

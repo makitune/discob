@@ -21,6 +21,7 @@ func (bot *Bot) PlayMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if !bot.isMentioned(m) {
 		return
 	}
+
 	start := strings.Index(m.Content, "<")
 	end := strings.Index(m.Content, ">")
 	keyword := m.Content[:start] + m.Content[end+1:]

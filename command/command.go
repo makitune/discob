@@ -66,6 +66,20 @@ func (bot *Bot) sendImage(s *discordgo.Session, c *discordgo.Channel, keyword st
 	}
 }
 
+func (bot *Bot) isMentioned(m *discordgo.MessageCreate) bool {
+	if len(m.Mentions) == 0 {
+		return false
+	}
+
+	for _, mu := range m.Mentions {
+		if mu.Username == bot.config.Discord.UserName {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (bot *Bot) foodPornMessage() (string, error) {
 	return any(bot.config.Command.FoodPorn.Messages)
 }
