@@ -54,6 +54,7 @@ func main() {
 	s.AddHandler(bot.Alola)
 	s.AddHandler(bot.FoodPorn)
 	s.AddHandler(bot.Welcome)
+	s.AddHandler(bot.DiskJockey)
 
 	lock := make(chan error)
 	err = s.Open()
