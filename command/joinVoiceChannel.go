@@ -10,7 +10,7 @@ import (
 )
 
 var (
-	joinTrigger        = "かも〜ん"
+	joinTrigger        = "かもーん"
 	defaultJoinMessage = "Here we go"
 )
 
