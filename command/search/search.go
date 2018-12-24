@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 
@@ -97,6 +98,13 @@ func SearchYoutube(keyword string, cfg config.Search) (*model.Youtube, error) {
 	}
 
 	return newYoutube(resp), nil
+}
+
+func DownloadMusic(y *model.Youtube, cfg config.Search) error {
+	cmd, err := exec.LookPath("youtube-dl")
+	if err != nil {
+		return err
+	}
 }
 
 func outputDir(cfg config.Search) (string, error) {
