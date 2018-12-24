@@ -34,6 +34,16 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if bot.voiceConnection == nil {
 		msg := strings.Join([]string{y.Title, y.Description, y.UrlString()}, "\n")
 		sendMessage(s, c, msg)
+	} else {
+		err := search.DownloadMusic(y, bot.config.Search)
+		if err != nil {
+			bot.sendErrorMessage(s, c, err)
+			return
+		}
+
+		if len(y.FilePath) == 0 {
+			return
+		}
 	}
 }
 
