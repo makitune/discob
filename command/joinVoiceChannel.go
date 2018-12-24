@@ -10,12 +10,12 @@ import (
 )
 
 var (
-	jointrigger        = "かも〜ん"
+	joinTrigger        = "かも〜ん"
 	defaultJoinMessage = "Here we go"
 )
 
 func (bot *Bot) JoinVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if !strings.Contains(m.Content, jointrigger) {
+	if !strings.Contains(m.Content, joinTrigger) {
 		return
 	}
 
