@@ -56,6 +56,7 @@ func main() {
 	s.AddHandler(bot.DiskJockey)
 	s.AddHandler(bot.FoodPorn)
 	s.AddHandler(bot.JoinVoiceChannel)
+	s.AddHandler(bot.PlayMusic)
 	s.AddHandler(bot.Welcome)
 
 	lock := make(chan error)
