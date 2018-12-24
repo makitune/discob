@@ -105,6 +105,11 @@ func DownloadMusic(y *model.Youtube, cfg config.Search) error {
 	if err != nil {
 		return err
 	}
+
+	_, err = exec.LookPath("ffmpeg")
+	if err != nil {
+		return err
+	}
 }
 
 func outputDir(cfg config.Search) (string, error) {
