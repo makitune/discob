@@ -3,13 +3,14 @@ package command
 import (
 	"strings"
 
+	"github.com/bwmarrin/dgvoice"
 	"github.com/bwmarrin/discordgo"
 	"github.com/makitune/discob/command/search"
 	"github.com/makitune/discob/errr"
 )
 
-func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if bot.voiceConnection != nil {
+func (bot *Bot) PlayMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
+	if bot.voiceConnection == nil {
 		return
 	}
 
@@ -35,20 +36,20 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	msg := strings.Join([]string{y.Title, y.Description, y.UrlString()}, "\n")
-	sendMessage(s, c, msg)
-}
-
-func (bot *Bot) isMentioned(m *discordgo.MessageCreate) bool {
-	if len(m.Mentions) == 0 {
-		return false
+	err = search.DownloadMusic(y, bot.config.Search)
+	if err != nil {
+		bot.sendErrorMessage(s, c, err)
+		return
 	}
 
-	for _, mu := range m.Mentions {
-		if mu.Username == bot.config.Discord.UserName {
-			return true
-		}
+	if len(y.FilePath) == 0 {
+		return
 	}
 
-	return false
+	if bot.stopChan != nil {
+		*bot.stopChan <- true
+		bot.stopChan = nil
+	}
+	bot.stopChan = new(chan bool)
+	dgvoice.PlayAudioFile(bot.voiceConnection, y.FilePath, *bot.stopChan)
 }
