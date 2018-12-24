@@ -7,6 +7,7 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
+	"os"
 	"os/exec"
 	"path/filepath"
 	"strconv"
@@ -109,6 +110,17 @@ func DownloadMusic(y *model.Youtube, cfg config.Search) error {
 	_, err = exec.LookPath("ffmpeg")
 	if err != nil {
 		return err
+	}
+
+	dir, err := outputDir(cfg)
+	if err != nil {
+		return err
+	}
+
+	if _, err := os.Stat(dir); os.IsNotExist(err) {
+		if err = os.Mkdir(dir, 0755); err != nil {
+			return err
+		}
 	}
 }
 
