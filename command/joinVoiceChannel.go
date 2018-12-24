@@ -22,6 +22,10 @@ func (bot *Bot) JoinVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreat
 		return
 	}
 
+	if bot.voiceConnection != nil {
+		return
+	}
+
 	c, err := s.Channel(m.ChannelID)
 	if err != nil {
 		errr.Printf("%s\n", err)
