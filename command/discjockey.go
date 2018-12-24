@@ -44,6 +44,7 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 		if len(y.FilePath) == 0 {
 			return
 		}
+		bot.stopChan = new(chan bool)
 	}
 }
 

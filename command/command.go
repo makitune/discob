@@ -17,6 +17,7 @@ type Bot struct {
 	config          config.Config
 	loginChans      map[string]chan struct{}
 	voiceConnection *discordgo.VoiceConnection
+	stopChan        *chan bool
 }
 
 func New(cfg config.Config) (bot *Bot) {
