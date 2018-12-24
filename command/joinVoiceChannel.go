@@ -10,7 +10,8 @@ import (
 )
 
 var (
-	jointrigger = "かも〜ん"
+	jointrigger        = "かも〜ん"
+	defaultJoinMessage = "Here we go"
 )
 
 func (bot *Bot) JoinVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -47,6 +48,8 @@ func (bot *Bot) JoinVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreat
 	}
 
 	bot.voiceConnection = connection
+
+	sendMessage(s, c, defaultJoinMessage)
 }
 
 func findVoiceChannel(s *discordgo.Session, guildID string) (*discordgo.Channel, error) {
