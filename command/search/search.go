@@ -122,6 +122,23 @@ func DownloadMusic(y *model.Youtube, cfg config.Search) error {
 			return err
 		}
 	}
+
+	filename := y.VideoID + ".m4a"
+	path := filepath.Join(dir, filename)
+	options := []string{
+		"-f",
+		"bestaudio[ext=m4a]",
+		"-o",
+		path,
+	}
+
+	args := append(options, y.UrlString())
+	err = exec.Command(cmd, args...).Run()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func outputDir(cfg config.Search) (string, error) {
