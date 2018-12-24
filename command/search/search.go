@@ -7,11 +7,16 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
+	"path/filepath"
 	"strconv"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/makitune/discob/command/model"
 	"github.com/makitune/discob/config"
+)
+
+var (
+	defaultOutputDir = "/opt/discob"
 )
 
 func SearchImage(keyword string, cfg config.Search) (*discordgo.MessageEmbed, error) {
@@ -92,4 +97,15 @@ func SearchYoutube(keyword string, cfg config.Search) (*model.Youtube, error) {
 	}
 
 	return newYoutube(resp), nil
+}
+
+func outputDir(cfg config.Search) (string, error) {
+	var dir string
+	if len(cfg.OutputDir) == 0 {
+		dir = defaultOutputDir
+	} else {
+		dir = cfg.OutputDir
+	}
+
+	return filepath.Abs(dir)
 }
