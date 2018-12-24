@@ -34,6 +34,13 @@ func (bot *Bot) JoinVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreat
 		bot.sendErrorMessage(s, c, err)
 		return
 	}
+
+	_, err := s.ChannelVoiceJoin(vChan.GuildID, vChan.ID, false, false)
+	if err != nil {
+		errr.Printf("%s\n", err)
+		bot.sendErrorMessage(s, c, err)
+		return
+	}
 }
 
 func findVoiceChannel(s *discordgo.Session, guildID string) (*discordgo.Channel, error) {
