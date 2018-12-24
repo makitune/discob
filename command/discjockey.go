@@ -31,8 +31,10 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	msg := strings.Join([]string{y.Title, y.Description, y.UrlString()}, "\n")
-	sendMessage(s, c, msg)
+	if bot.voiceConnection == nil {
+		msg := strings.Join([]string{y.Title, y.Description, y.UrlString()}, "\n")
+		sendMessage(s, c, msg)
+	}
 }
 
 func (bot *Bot) isMentioned(m *discordgo.MessageCreate) bool {
