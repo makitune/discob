@@ -85,6 +85,10 @@ func (bot *Bot) joinVoiceChannelMessage() (string, error) {
 	return any(bot.config.Command.JoinVoiceChannel.Messages)
 }
 
+func (bot *Bot) defectVoiceChannelMessage() (string, error) {
+	return any(bot.config.Command.DefectVoiceChannel.Messages)
+}
+
 func any(target []string) (string, error) {
 	max := len(target)
 	if max == 0 {

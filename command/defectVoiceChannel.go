@@ -35,5 +35,10 @@ func (bot *Bot) DefectVoiceChannel(s *discordgo.Session, m *discordgo.MessageCre
 	}
 
 	bot.voiceConnection = nil
-	sendMessage(s, c, defaultDefectMessage)
+
+	msg, err := bot.defectVoiceChannelMessage()
+	if err != nil {
+		msg = defaultDefectMessage
+	}
+	sendMessage(s, c, msg)
 }
