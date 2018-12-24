@@ -15,15 +15,15 @@ var (
 )
 
 func (bot *Bot) JoinVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreate) {
+	if bot.voiceConnection != nil {
+		return
+	}
+
 	if !strings.Contains(m.Content, joinTrigger) {
 		return
 	}
 
 	if m.Author.Username == bot.config.Discord.UserName || m.Author.Bot {
-		return
-	}
-
-	if bot.voiceConnection != nil {
 		return
 	}
 
