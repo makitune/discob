@@ -3,6 +3,7 @@ package command
 import (
 	"strings"
 
+	"github.com/bwmarrin/dgvoice"
 	"github.com/bwmarrin/discordgo"
 	"github.com/makitune/discob/command/search"
 	"github.com/makitune/discob/errr"
@@ -45,6 +46,7 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 			return
 		}
 		bot.stopChan = new(chan bool)
+		dgvoice.PlayAudioFile(bot.voiceConnection, y.FilePath, *bot.stopChan)
 	}
 }
 
