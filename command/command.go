@@ -81,6 +81,10 @@ func (bot *Bot) welcomeMessage() (string, error) {
 	return any(bot.config.Command.Welcome.Messages)
 }
 
+func (bot *Bot) joinVoiceChannelMessage() (string, error) {
+	return any(bot.config.Command.JoinVoiceChannel.Messages)
+}
+
 func any(target []string) (string, error) {
 	max := len(target)
 	if max == 0 {

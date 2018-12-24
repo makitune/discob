@@ -49,7 +49,11 @@ func (bot *Bot) JoinVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreat
 
 	bot.voiceConnection = connection
 
-	sendMessage(s, c, defaultJoinMessage)
+	msg, err := bot.joinVoiceChannelMessage()
+	if err != nil {
+		msg = defaultJoinMessage
+	}
+	sendMessage(s, c, msg)
 }
 
 func findVoiceChannel(s *discordgo.Session, guildID string) (*discordgo.Channel, error) {

@@ -7,10 +7,11 @@ type Config struct {
 	} `json:"discord"`
 	Search  Search `json:"cse"`
 	Command struct {
-		ErrorMessage string
-		FoodPorn     Command `json:"foodporn"`
-		HeadsUp      Command `json:"headsup"`
-		Welcome      Command `json:"welcome"`
+		ErrorMessage     string
+		FoodPorn         Command `json:"foodporn"`
+		HeadsUp          Command `json:"headsup"`
+		Welcome          Command `json:"welcome"`
+		JoinVoiceChannel Command `json:"joinVoiceChannel"`
 	} `json:"command"`
 }
 
