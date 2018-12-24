@@ -14,8 +14,9 @@ import (
 const dem = "Something bad happened"
 
 type Bot struct {
-	config     config.Config
-	loginChans map[string]chan struct{}
+	config          config.Config
+	loginChans      map[string]chan struct{}
+	voiceConnection *discordgo.VoiceConnection
 }
 
 func New(cfg config.Config) (bot *Bot) {
