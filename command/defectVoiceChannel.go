@@ -8,7 +8,8 @@ import (
 )
 
 var (
-	defectTrigger = "あでゅー"
+	defectTrigger        = "あでゅー"
+	defaultDefectMessage = "See ya"
 )
 
 func (bot *Bot) DefectVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -20,11 +21,19 @@ func (bot *Bot) DefectVoiceChannel(s *discordgo.Session, m *discordgo.MessageCre
 		return
 	}
 
-	err = bot.voiceConnection.Disconnect()
+	c, err := s.Channel(m.ChannelID)
 	if err != nil {
 		errr.Printf("%s\n", err)
 		return
 	}
 
+	err = bot.voiceConnection.Disconnect()
+	if err != nil {
+		errr.Printf("%s\n", err)
+		bot.sendErrorMessage(s, c, err)
+		return
+	}
+
 	bot.voiceConnection = nil
+	sendMessage(s, c, defaultDefectMessage)
 }
