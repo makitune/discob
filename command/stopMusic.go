@@ -15,7 +15,7 @@ func (bot *Bot) StopMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if bot.stopChan == nil {
+	if !bot.voice.Playing() {
 		return
 	}
 
@@ -23,6 +23,5 @@ func (bot *Bot) StopMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	close(bot.stopChan)
-	bot.stopChan = nil
+	bot.voice.Stop()
 }

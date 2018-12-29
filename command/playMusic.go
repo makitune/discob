@@ -3,14 +3,13 @@ package command
 import (
 	"strings"
 
-	"github.com/bwmarrin/dgvoice"
 	"github.com/bwmarrin/discordgo"
 	"github.com/makitune/discob/command/search"
 	"github.com/makitune/discob/errr"
 )
 
 func (bot *Bot) PlayMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if bot.voiceConnection == nil {
+	if bot.voice == nil {
 		return
 	}
 
@@ -47,9 +46,10 @@ func (bot *Bot) PlayMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if bot.stopChan != nil {
-		close(bot.stopChan)
+	if bot.voice.Playing() {
+		bot.voice.Stop()
 	}
-	bot.stopChan = make(chan bool)
-	dgvoice.PlayAudioFile(bot.voiceConnection, y.FilePath, bot.stopChan)
+
+	bot.voice.Youtube = y
+	bot.voice.Play()
 }

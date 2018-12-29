@@ -13,7 +13,7 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if bot.voiceConnection != nil {
+	if bot.voice != nil {
 		return
 	}
 

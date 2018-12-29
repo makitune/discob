@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/makitune/discob/command/model"
 	"github.com/makitune/discob/command/search"
 	"github.com/makitune/discob/config"
 	"github.com/makitune/discob/errr"
@@ -14,10 +15,9 @@ import (
 const dem = "Something bad happened"
 
 type Bot struct {
-	config          config.Config
-	loginChans      map[string]chan struct{}
-	voiceConnection *discordgo.VoiceConnection
-	stopChan        chan bool
+	config     config.Config
+	loginChans map[string]chan struct{}
+	voice      *model.Voice
 }
 
 func New(cfg config.Config) (bot *Bot) {

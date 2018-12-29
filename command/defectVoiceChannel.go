@@ -17,7 +17,7 @@ func (bot *Bot) DefectVoiceChannel(s *discordgo.Session, m *discordgo.MessageCre
 		return
 	}
 
-	if bot.voiceConnection == nil {
+	if bot.voice == nil {
 		return
 	}
 
@@ -27,13 +27,13 @@ func (bot *Bot) DefectVoiceChannel(s *discordgo.Session, m *discordgo.MessageCre
 		return
 	}
 
-	err = bot.voiceConnection.Disconnect()
+	err = bot.voice.Connection.Disconnect()
 	if err != nil {
 		bot.sendErrorMessage(s, c, err)
 		return
 	}
 
-	bot.voiceConnection = nil
+	bot.voice = nil
 
 	msg, err := bot.defectVoiceChannelMessage()
 	if err != nil {
