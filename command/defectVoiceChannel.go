@@ -13,11 +13,11 @@ var (
 )
 
 func (bot *Bot) DefectVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if bot.voiceConnection == nil {
+	if !strings.Contains(m.Content, defectTrigger) {
 		return
 	}
 
-	if !strings.Contains(m.Content, defectTrigger) {
+	if bot.voiceConnection == nil {
 		return
 	}
 

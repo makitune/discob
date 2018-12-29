@@ -14,11 +14,11 @@ func (bot *Bot) PlayMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if m.Author.Username == bot.config.Discord.UserName || m.Author.Bot {
+	if !bot.isMentioned(m) {
 		return
 	}
 
-	if !bot.isMentioned(m) {
+	if m.Author.Username == bot.config.Discord.UserName || m.Author.Bot {
 		return
 	}
 

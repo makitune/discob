@@ -9,15 +9,15 @@ import (
 )
 
 func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
+	if !bot.isMentioned(m) {
+		return
+	}
+
 	if bot.voiceConnection != nil {
 		return
 	}
 
 	if m.Author.Username == bot.config.Discord.UserName || m.Author.Bot {
-		return
-	}
-
-	if !bot.isMentioned(m) {
 		return
 	}
 
