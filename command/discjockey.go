@@ -21,18 +21,18 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	start := strings.Index(m.Content, "<")
-	end := strings.Index(m.Content, ">")
-	keyword := m.Content[:start] + m.Content[end+1:]
-	y, err := search.SearchYoutube(keyword, bot.config.Search)
+	c, err := s.State.Channel(m.ChannelID)
 	if err != nil {
 		errr.Printf("%s\n", err)
 		return
 	}
 
-	c, err := s.State.Channel(m.ChannelID)
+	start := strings.Index(m.Content, "<")
+	end := strings.Index(m.Content, ">")
+	keyword := m.Content[:start] + m.Content[end+1:]
+	y, err := search.SearchYoutube(keyword, bot.config.Search)
 	if err != nil {
-		errr.Printf("%s\n", err)
+		bot.sendErrorMessage(s, c, err)
 		return
 	}
 
