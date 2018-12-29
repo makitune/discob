@@ -27,6 +27,10 @@ func (bot *Bot) DefectVoiceChannel(s *discordgo.Session, m *discordgo.MessageCre
 		return
 	}
 
+	if bot.voice.Playing() {
+		bot.voice.Stop()
+	}
+
 	err = bot.voice.Connection.Disconnect()
 	if err != nil {
 		bot.sendErrorMessage(s, c, err)
