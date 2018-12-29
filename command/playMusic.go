@@ -47,7 +47,10 @@ func (bot *Bot) PlayMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if bot.voice.Playing() {
-		bot.voice.Stop()
+		if err := bot.voice.Stop(); err != nil {
+			errr.Printf("%s\n", err)
+			return
+		}
 	}
 
 	bot.voice.Youtube = y

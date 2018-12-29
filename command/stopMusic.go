@@ -4,6 +4,7 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/makitune/discob/errr"
 )
 
 var (
@@ -23,5 +24,8 @@ func (bot *Bot) StopMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	bot.voice.Stop()
+	if err := bot.voice.Stop(); err != nil {
+		errr.Printf("%s\n", err)
+		return
+	}
 }
