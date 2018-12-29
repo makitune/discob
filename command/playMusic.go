@@ -48,8 +48,7 @@ func (bot *Bot) PlayMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	if bot.stopChan != nil {
-		bot.stopChan <- true
-		bot.stopChan = nil
+		close(bot.stopChan)
 	}
 	bot.stopChan = make(chan bool)
 	dgvoice.PlayAudioFile(bot.voiceConnection, y.FilePath, bot.stopChan)

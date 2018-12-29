@@ -23,6 +23,6 @@ func (bot *Bot) StopMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	bot.stopChan <- true
+	close(bot.stopChan)
 	bot.stopChan = nil
 }
