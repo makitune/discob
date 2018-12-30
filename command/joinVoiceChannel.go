@@ -5,6 +5,7 @@ import (
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/makitune/discob/command/model"
 	"github.com/makitune/discob/errr"
 )
 
@@ -44,7 +45,9 @@ func (bot *Bot) JoinVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreat
 		return
 	}
 
-	bot.voice.Connection = connection
+	bot.voice = &model.Voice{
+		Connection: connection,
+	}
 
 	msg, err := bot.joinVoiceChannelMessage()
 	if err != nil {
