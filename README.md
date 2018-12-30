@@ -4,7 +4,11 @@ Discob is a bot for Discord using the [DiscordGo](https://github.com/bwmarrin/di
 
 ## Requirements
 
-- Google Custom Search API
+- Google APIs
+  - Custom Search
+  - Youtube Data
+- youtube-dl
+- ffmpeg
 
 ## Usage
 
@@ -24,15 +28,22 @@ Create `config.json` file and specifies it at execute using this template:
   },
   "cse": {
     "id": "Search engine ID",
-    "key": "API key"
+    "key": "API key",
+    "outputDir": "/opt/discob"
   },
   "command": {
     "errormessage": "something bad happened",
+    "defectVoiceChannel": {
+      "messages": ["see ya"]
+    },
     "foodporn": {
       "messages": ["cheer up"]
     },
     "headsup": {
       "messages": ["time to eat"]
+    },
+    "joinVoiceChannel": {
+      "messages": ["Here we go"]
     },
     "welcome": {
       "keywords": ["welcome"],
