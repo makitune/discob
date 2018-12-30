@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/bwmarrin/discordgo"
+	"github.com/makitune/discob/command/model"
 	"github.com/makitune/discob/command/search"
 	"github.com/makitune/discob/config"
 	"github.com/makitune/discob/errr"
@@ -16,6 +17,7 @@ const dem = "Something bad happened"
 type Bot struct {
 	config     config.Config
 	loginChans map[string]chan struct{}
+	voice      *model.Voice
 }
 
 func New(cfg config.Config) (bot *Bot) {
@@ -64,6 +66,20 @@ func (bot *Bot) sendImage(s *discordgo.Session, c *discordgo.Channel, keyword st
 	}
 }
 
+func (bot *Bot) isMentioned(m *discordgo.MessageCreate) bool {
+	if len(m.Mentions) == 0 {
+		return false
+	}
+
+	for _, mu := range m.Mentions {
+		if mu.Username == bot.config.Discord.UserName {
+			return true
+		}
+	}
+
+	return false
+}
+
 func (bot *Bot) foodPornMessage() (string, error) {
 	return any(bot.config.Command.FoodPorn.Messages)
 }
@@ -78,6 +94,14 @@ func (bot *Bot) welcomeKeyword() (string, error) {
 
 func (bot *Bot) welcomeMessage() (string, error) {
 	return any(bot.config.Command.Welcome.Messages)
+}
+
+func (bot *Bot) joinVoiceChannelMessage() (string, error) {
+	return any(bot.config.Command.JoinVoiceChannel.Messages)
+}
+
+func (bot *Bot) defectVoiceChannelMessage() (string, error) {
+	return any(bot.config.Command.DefectVoiceChannel.Messages)
 }
 
 func any(target []string) (string, error) {

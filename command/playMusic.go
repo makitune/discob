@@ -8,12 +8,12 @@ import (
 	"github.com/makitune/discob/errr"
 )
 
-func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if !bot.isMentioned(m) {
+func (bot *Bot) PlayMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
+	if bot.voice == nil {
 		return
 	}
 
-	if bot.voice != nil {
+	if !bot.isMentioned(m) {
 		return
 	}
 
@@ -36,6 +36,23 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	msg := strings.Join([]string{y.Title, y.Description, y.UrlString()}, "\n")
-	sendMessage(s, c, msg)
+	err = search.DownloadMusic(y, bot.config.Search)
+	if err != nil {
+		bot.sendErrorMessage(s, c, err)
+		return
+	}
+
+	if len(y.FilePath) == 0 {
+		return
+	}
+
+	if bot.voice.Playing() {
+		if err := bot.voice.Stop(); err != nil {
+			errr.Printf("%s\n", err)
+			return
+		}
+	}
+
+	bot.voice.Youtube = y
+	bot.voice.Play()
 }
