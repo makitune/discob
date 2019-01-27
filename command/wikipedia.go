@@ -22,4 +22,7 @@ func (bot *Bot) Wikipedia(s *discordgo.Session, m *discordgo.MessageCreate) {
 		errr.Printf("%s\n", err)
 		return
 	}
+
+	i := strings.Index(m.Content, "ってしってる？")
+	keyword := m.Content[:i]
 }
