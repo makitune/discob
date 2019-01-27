@@ -59,6 +59,7 @@ func main() {
 	s.AddHandler(bot.PlayMusic)
 	s.AddHandler(bot.StopMusic)
 	s.AddHandler(bot.Welcome)
+	s.AddHandler(bot.Wikipedia)
 
 	lock := make(chan error)
 	err = s.Open()
