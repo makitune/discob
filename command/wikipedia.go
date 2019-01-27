@@ -32,4 +32,6 @@ func (bot *Bot) Wikipedia(s *discordgo.Session, m *discordgo.MessageCreate) {
 		bot.sendErrorMessage(s, c, err)
 		return
 	}
+
+	sendMessage(s, c, "ほれっ\n"+urlString)
 }
