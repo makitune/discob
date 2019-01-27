@@ -11,6 +11,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/makitune/discob/command/model"
@@ -151,4 +152,37 @@ func outputDir(cfg config.Search) (string, error) {
 	}
 
 	return filepath.Abs(dir)
+}
+
+func SearchWikipediaURL(keyword string) (string, error) {
+	q := url.Values{}
+	q.Add("q", keyword)
+	u := url.URL{
+		Scheme:   "https",
+		Host:     "www.google.com",
+		Path:     "search",
+		RawQuery: q.Encode(),
+	}
+
+	resp, err := http.Get(u.String())
+	if err != nil {
+		return "", err
+	}
+	defer resp.Body.Close()
+
+	data, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return "", err
+	}
+	str := string(data)
+	start := strings.Index(str, "https://ja.wikipedia.org/wiki/%25")
+	if start == -1 {
+		return "", errors.New(keyword + " not found")
+	}
+	end := strings.Index(str[start:], "&")
+	return "https://ja.wikipedia.org/wiki/" + decrypt(str[start+30:start+end]), nil
+}
+
+func decrypt(keyword string) string {
+	return strings.Replace(keyword, "%25", "%", -1)
 }
