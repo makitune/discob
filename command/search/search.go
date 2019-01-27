@@ -180,9 +180,14 @@ func SearchWikipediaURL(keyword string) (string, error) {
 		return "", errors.New(keyword + " not found")
 	}
 	end := strings.Index(str[start:], "&")
-	return "https://ja.wikipedia.org/wiki/" + decrypt(str[start+30:start+end]), nil
+	title, err := humanize(str[start+30 : start+end])
+	if err != nil {
+		return "nil", err
+	}
+	return "https://ja.wikipedia.org/wiki/" + title, nil
 }
 
-func decrypt(keyword string) string {
-	return strings.Replace(keyword, "%25", "%", -1)
+func humanize(keyword string) (string, error) {
+	s := strings.Replace(keyword, "%25", "%", -1)
+	return url.QueryUnescape(s)
 }
