@@ -1,6 +1,6 @@
 # Discob
 
-Discob is a bot for Discord using the [DiscordGo](https://github.com/bwmarrin/discordgo) library.
+Discob is a private bot for Discord using the [DiscordGo](https://github.com/bwmarrin/discordgo) library.
 
 ## Requirements
 
