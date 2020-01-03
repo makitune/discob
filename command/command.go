@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/andersfylling/disgord"
-	"github.com/bwmarrin/discordgo"
 	"github.com/makitune/discob/command/model"
 	"github.com/makitune/discob/config"
 	"github.com/makitune/discob/errr"
@@ -32,15 +31,7 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-func sendMessage(s *discordgo.Session, c *discordgo.Channel, msg string) {
-	_, err := s.ChannelMessageSend(c.ID, msg)
-	if err != nil {
-		errr.Printf("%s\n", err)
-	}
-}
-
 func (bot *Bot) sendMessage(ctx context.Context, s disgord.Session, channelID disgord.Snowflake, msg *string, imgURL *string) error {
-
 	params, err := newCreateMessageParams(msg, imgURL)
 	if err != nil {
 		return bot.sendErrorMessage(ctx, s, channelID, err)
