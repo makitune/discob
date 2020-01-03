@@ -17,9 +17,8 @@ type Config struct {
 }
 
 type Search struct {
-	Key       string `json:"key"`
-	Cx        string `json:"id"`
-	OutputDir string `json:"outputDir"`
+	Key string `json:"key"`
+	Cx  string `json:"id"`
 }
 
 type Command struct {

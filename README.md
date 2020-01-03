@@ -28,8 +28,7 @@ Create `config.json` file and specifies it at execute using this template:
   },
   "cse": {
     "id": "Search engine ID",
-    "key": "API key",
-    "outputDir": "/opt/discob"
+    "key": "API key"
   },
   "command": {
     "errormessage": "something bad happened",
