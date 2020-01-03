@@ -60,7 +60,7 @@ func main() {
 	client.On(disgord.EvtMessageCreate,
 		filter.NotByBot,
 		bot.Alola,
-		bot.DefectVoiceChannel,
+		bot.LeaveVoiceChannel,
 		bot.DiskJockey,
 		bot.FoodPorn,
 		bot.JoinVoiceChannel,

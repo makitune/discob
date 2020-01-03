@@ -33,7 +33,7 @@ Create `config.json` file and specifies it at execute using this template:
   },
   "command": {
     "errormessage": "something bad happened",
-    "defectVoiceChannel": {
+    "leaveVoiceChannel": {
       "messages": ["see ya"]
     },
     "foodporn": {

@@ -10,7 +10,7 @@
   },
   "command": {
     "errormessage": "反応がない。。ただの屍のようだ・・・",
-    "defectVoiceChannel": {
+    "leaveVoiceChannel": {
       "messages": [
         "恥じて死すより、生きて汚名を雪がん",
         "二度目はなくってよ！",

@@ -8,12 +8,12 @@ import (
 )
 
 var (
-	defectTrigger        = "あでゅー"
-	defaultDefectMessage = "See ya"
+	leaveTrigger        = "あでゅー"
+	defaultLeaveMessage = "See ya"
 )
 
-func (bot *Bot) DefectVoiceChannel(session disgord.Session, evt *disgord.MessageCreate) {
-	if !strings.Contains(evt.Message.Content, defectTrigger) {
+func (bot *Bot) LeaveVoiceChannel(session disgord.Session, evt *disgord.MessageCreate) {
+	if !strings.Contains(evt.Message.Content, leaveTrigger) {
 		return
 	}
 
@@ -33,9 +33,9 @@ func (bot *Bot) DefectVoiceChannel(session disgord.Session, evt *disgord.Message
 
 	bot.voice = nil
 
-	msg, err := bot.defectVoiceChannelMessage()
+	msg, err := bot.leaveVoiceChannelMessage()
 	if err != nil {
-		msg = defaultDefectMessage
+		msg = defaultLeaveMessage
 	}
 
 	if err := bot.sendMessage(evt.Ctx, session, evt.Message.ChannelID, &msg, nil); err != nil {
