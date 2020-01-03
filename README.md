@@ -31,9 +31,6 @@ Create `config.json` file and specifies it at execute using this template:
   },
   "command": {
     "errormessage": "something bad happened",
-    "leaveVoiceChannel": {
-      "messages": ["see ya"]
-    },
     "foodporn": {
       "messages": ["cheer up"]
     },
@@ -42,6 +39,9 @@ Create `config.json` file and specifies it at execute using this template:
     },
     "joinVoiceChannel": {
       "messages": ["Here we go"]
+    },
+    "leaveVoiceChannel": {
+      "messages": ["see ya"]
     },
     "welcome": {
       "keywords": ["welcome"],
