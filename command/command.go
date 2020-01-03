@@ -34,7 +34,7 @@ func init() {
 func (bot *Bot) sendMessage(ctx context.Context, s disgord.Session, channelID disgord.Snowflake, msg *string, imgURL *string) error {
 	params, err := newCreateMessageParams(msg, imgURL)
 	if err != nil {
-		return bot.sendErrorMessage(ctx, s, channelID, err)
+		return err
 	}
 	_, err = s.CreateMessage(ctx, channelID, params)
 	return err

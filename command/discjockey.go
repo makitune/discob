@@ -30,5 +30,8 @@ func (bot *Bot) DiskJockey(session disgord.Session, evt *disgord.MessageCreate) 
 	}
 
 	msg := strings.Join([]string{y.Title, y.Description, y.UrlString()}, "\n")
-	bot.sendMessage(evt.Ctx, session, event.ChannelID, &msg, nil)
+	if err := bot.sendMessage(evt.Ctx, session, event.ChannelID, &msg, nil); err != nil {
+		errr.Printf("%s\n", err)
+		return
+	}
 }
