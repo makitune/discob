@@ -3,35 +3,31 @@ package command
 import (
 	"strings"
 
+	"github.com/andersfylling/disgord"
 	"github.com/makitune/discob/command/search"
-
-	"github.com/bwmarrin/discordgo"
 	"github.com/makitune/discob/errr"
 )
 
-func (bot *Bot) Wikipedia(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if !strings.HasSuffix(m.Content, "ってしってる？") {
+func (bot *Bot) Wikipedia(session disgord.Session, evt *disgord.MessageCreate) {
+	content := evt.Message.Content
+	if !strings.HasSuffix(content, "ってしってる？") {
 		return
 	}
 
-	user := m.Author
-	if user.Username == bot.config.Discord.UserName || user.Bot {
+	i := strings.Index(content, "ってしってる？")
+	keyword := content[:i]
+	u, err := search.SearchWikipediaURL(keyword)
+	if err != nil {
+		if e := bot.sendErrorMessage(evt.Ctx, session, evt.Message.ChannelID, err); e != nil {
+			errr.Printf("%s\n", err)
+		}
 		return
 	}
 
-	c, err := s.State.Channel(m.ChannelID)
+	msg := "ほれっ " + u
+	err = bot.sendMessage(evt.Ctx, session, evt.Message.ChannelID, &msg, nil)
 	if err != nil {
 		errr.Printf("%s\n", err)
 		return
 	}
-
-	i := strings.Index(m.Content, "ってしってる？")
-	keyword := m.Content[:i]
-	urlString, err := search.SearchWikipediaURL(keyword)
-	if err != nil {
-		bot.sendErrorMessage(s, c, err)
-		return
-	}
-
-	sendMessage(s, c, "ほれっ\n"+urlString)
 }

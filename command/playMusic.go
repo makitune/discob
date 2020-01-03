@@ -3,56 +3,47 @@ package command
 import (
 	"strings"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
 	"github.com/makitune/discob/command/search"
 	"github.com/makitune/discob/errr"
 )
 
-func (bot *Bot) PlayMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
+func (bot *Bot) PlayMusic(session disgord.Session, evt *disgord.MessageCreate) {
 	if bot.voice == nil {
 		return
 	}
 
-	if !bot.isMentioned(m) {
+	if !bot.isMentioned(evt) {
 		return
 	}
 
-	if m.Author.Username == bot.config.Discord.UserName || m.Author.Bot {
-		return
-	}
+	content := evt.Message.Content
 
-	c, err := s.State.Channel(m.ChannelID)
-	if err != nil {
-		errr.Printf("%s\n", err)
-		return
-	}
-
-	start := strings.Index(m.Content, "<")
-	end := strings.Index(m.Content, ">")
-	keyword := m.Content[:start] + m.Content[end+1:]
+	start := strings.Index(content, "<")
+	end := strings.Index(content, ">")
+	keyword := content[:start] + content[end+1:]
 	y, err := search.SearchYoutube(keyword, bot.config.Search)
 	if err != nil {
-		bot.sendErrorMessage(s, c, err)
+		if e := bot.sendErrorMessage(evt.Ctx, session, evt.Message.ChannelID, err); e != nil {
+			errr.Printf("%s\n", e)
+		}
 		return
 	}
 
-	err = search.DownloadMusic(y, bot.config.Search)
+	bot.voice.Stop()
+	err = bot.voice.Play(y)
 	if err != nil {
-		bot.sendErrorMessage(s, c, err)
-		return
-	}
-
-	if len(y.FilePath) == 0 {
-		return
-	}
-
-	if bot.voice.Playing() {
-		if err := bot.voice.Stop(); err != nil {
+		errr.Printf("%s\n", err)
+		msg := "あかーん"
+		if err := bot.sendMessage(evt.Ctx, session, evt.Message.ChannelID, &msg, nil); err != nil {
 			errr.Printf("%s\n", err)
 			return
 		}
 	}
 
-	bot.voice.Youtube = y
-	bot.voice.Play()
+	msg := "吟じます！\n" + y.Title
+	if err := bot.sendMessage(evt.Ctx, session, evt.Message.ChannelID, &msg, nil); err != nil {
+		errr.Printf("%s\n", err)
+		return
+	}
 }

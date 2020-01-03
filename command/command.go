@@ -1,13 +1,13 @@
 package command
 
 import (
+	"context"
 	"errors"
 	"math/rand"
 	"time"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
 	"github.com/makitune/discob/command/model"
-	"github.com/makitune/discob/command/search"
 	"github.com/makitune/discob/config"
 	"github.com/makitune/discob/errr"
 )
@@ -16,14 +16,14 @@ const dem = "Something bad happened"
 
 type Bot struct {
 	config     config.Config
-	loginChans map[string]chan struct{}
+	loginChans map[disgord.Snowflake]chan struct{}
 	voice      *model.Voice
 }
 
 func New(cfg config.Config) (bot *Bot) {
 	return &Bot{
 		config:     cfg,
-		loginChans: make(map[string]chan struct{}),
+		loginChans: make(map[disgord.Snowflake]chan struct{}),
 	}
 }
 
@@ -31,14 +31,40 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-func sendMessage(s *discordgo.Session, c *discordgo.Channel, msg string) {
-	_, err := s.ChannelMessageSend(c.ID, msg)
+func (bot *Bot) sendMessage(ctx context.Context, s disgord.Session, channelID disgord.Snowflake, msg *string, imgURL *string) error {
+	params, err := newCreateMessageParams(msg, imgURL)
 	if err != nil {
-		errr.Printf("%s\n", err)
+		return err
 	}
+	_, err = s.CreateMessage(ctx, channelID, params)
+	return err
 }
 
-func (bot *Bot) sendErrorMessage(s *discordgo.Session, c *discordgo.Channel, err error) {
+func newCreateMessageParams(msg *string, imgURL *string) (*disgord.CreateMessageParams, error) {
+	if msg == nil && imgURL == nil {
+		return nil, errors.New("Sending message not set")
+	}
+
+	if msg == nil {
+		return &disgord.CreateMessageParams{
+			Embed: &disgord.Embed{
+				Image: &disgord.EmbedImage{URL: *imgURL},
+			},
+		}, nil
+	}
+	if imgURL == nil {
+		return &disgord.CreateMessageParams{Content: *msg}, nil
+	}
+
+	return &disgord.CreateMessageParams{
+		Content: *msg,
+		Embed: &disgord.Embed{
+			Image: &disgord.EmbedImage{URL: *imgURL},
+		},
+	}, nil
+}
+
+func (bot *Bot) sendErrorMessage(ctx context.Context, s disgord.Session, channelID disgord.Snowflake, err error) error {
 	if err != nil {
 		errr.Printf("%s\n", err)
 	}
@@ -47,32 +73,21 @@ func (bot *Bot) sendErrorMessage(s *discordgo.Session, c *discordgo.Channel, err
 	if len(msg) == 0 {
 		msg = dem
 	}
-	_, err = s.ChannelMessageSend(c.ID, msg)
-	if err != nil {
-		errr.Printf("%s\n", err)
-	}
+	_, sendErr := s.CreateMessage(ctx, channelID, &disgord.CreateMessageParams{Content: msg})
+	return sendErr
 }
 
-func (bot *Bot) sendImage(s *discordgo.Session, c *discordgo.Channel, keyword string) {
-	me, err := search.SearchImage(keyword, bot.config.Search)
-	if err != nil {
-		bot.sendErrorMessage(s, c, err)
-		return
-	}
-
-	_, err = s.ChannelMessageSendEmbed(c.ID, me)
-	if err != nil {
-		errr.Printf("%s\n", err)
-	}
-}
-
-func (bot *Bot) isMentioned(m *discordgo.MessageCreate) bool {
-	if len(m.Mentions) == 0 {
+func (bot *Bot) isMentioned(evt *disgord.MessageCreate) bool {
+	if len(evt.Message.Mentions) == 0 {
 		return false
 	}
 
-	for _, mu := range m.Mentions {
-		if mu.Username == bot.config.Discord.UserName {
+	if evt.Message.MentionEveryone {
+		return true
+	}
+
+	for _, u := range evt.Message.Mentions {
+		if u.Username == bot.config.Discord.UserName {
 			return true
 		}
 	}
@@ -100,8 +115,8 @@ func (bot *Bot) joinVoiceChannelMessage() (string, error) {
 	return any(bot.config.Command.JoinVoiceChannel.Messages)
 }
 
-func (bot *Bot) defectVoiceChannelMessage() (string, error) {
-	return any(bot.config.Command.DefectVoiceChannel.Messages)
+func (bot *Bot) leaveVoiceChannelMessage() (string, error) {
+	return any(bot.config.Command.LeaveVoiceChannel.Messages)
 }
 
 func any(target []string) (string, error) {

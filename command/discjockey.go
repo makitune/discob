@@ -3,13 +3,13 @@ package command
 import (
 	"strings"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
 	"github.com/makitune/discob/command/search"
 	"github.com/makitune/discob/errr"
 )
 
-func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if !bot.isMentioned(m) {
+func (bot *Bot) DiskJockey(session disgord.Session, evt *disgord.MessageCreate) {
+	if !bot.isMentioned(evt) {
 		return
 	}
 
@@ -17,25 +17,21 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if m.Author.Username == bot.config.Discord.UserName || m.Author.Bot {
-		return
-	}
-
-	c, err := s.State.Channel(m.ChannelID)
-	if err != nil {
-		errr.Printf("%s\n", err)
-		return
-	}
-
-	start := strings.Index(m.Content, "<")
-	end := strings.Index(m.Content, ">")
-	keyword := m.Content[:start] + m.Content[end+1:]
+	event := evt.Message
+	start := strings.Index(event.Content, "<")
+	end := strings.Index(event.Content, ">")
+	keyword := event.Content[:start] + event.Content[end+1:]
 	y, err := search.SearchYoutube(keyword, bot.config.Search)
 	if err != nil {
-		bot.sendErrorMessage(s, c, err)
+		if e := bot.sendErrorMessage(evt.Ctx, session, event.ChannelID, err); e != nil {
+			errr.Printf("%s\n", err)
+		}
 		return
 	}
 
 	msg := strings.Join([]string{y.Title, y.Description, y.UrlString()}, "\n")
-	sendMessage(s, c, msg)
+	if err := bot.sendMessage(evt.Ctx, session, event.ChannelID, &msg, nil); err != nil {
+		errr.Printf("%s\n", err)
+		return
+	}
 }
