@@ -4,7 +4,8 @@ import (
 	"math/rand"
 	"strings"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
+	"github.com/makitune/discob/command/search"
 	"github.com/makitune/discob/errr"
 )
 
@@ -28,28 +29,28 @@ var (
 	}
 )
 
-func (bot *Bot) FoodPorn(s *discordgo.Session, m *discordgo.MessageCreate) {
+func (bot *Bot) FoodPorn(session disgord.Session, evt *disgord.MessageCreate) {
+	event := evt.Message
+	keyword := fpkws[rand.Intn(len(fpkws))]
+
 	for _, trg := range fptrg {
-		if strings.Contains(m.Content, trg) {
-			user := m.Author
-			if user.Username == bot.config.Discord.UserName || user.Bot {
-				return
-			}
+		if !strings.Contains(event.Content, trg) {
+			continue
+		}
 
-			c, err := s.State.Channel(m.ChannelID)
-			if err != nil {
-				errr.Printf("%s\n", err)
-				return
-			}
+		msg, err := bot.foodPornMessage()
+		if err != nil {
+			msg = dfm
+		}
+		imgURL, err := search.SearchImage(keyword, bot.config.Search)
+		if err != nil {
+			errr.Printf("%s\n", err)
+			return
+		}
 
-			msg, err := bot.foodPornMessage()
-			if err != nil {
-				msg = dfm
-			}
-			sendMessage(s, c, msg)
-
-			max := len(fpkws)
-			bot.sendImage(s, c, fpkws[rand.Intn(max)])
+		err = bot.sendMessage(evt.Ctx, session, event.ChannelID, &msg, imgURL)
+		if err != nil {
+			errr.Printf("%s\n", err)
 			return
 		}
 	}

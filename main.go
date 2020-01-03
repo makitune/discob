@@ -1,13 +1,15 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"flag"
 	"io/ioutil"
 	"log"
 	"os"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
+	"github.com/andersfylling/disgord/std"
 	"github.com/makitune/discob/command"
 	"github.com/makitune/discob/config"
 )
@@ -45,27 +47,26 @@ func main() {
 	}
 
 	bot := command.New(cfg)
-	s, err := discordgo.New()
+	client := disgord.New(disgord.Config{
+		BotToken: cfg.Discord.Token,
+		Logger:   disgord.DefaultLogger(false),
+	})
+	defer client.StayConnectedUntilInterrupted(context.Background())
+
+	filter, err := std.NewMsgFilter(context.Background(), client)
 	if err != nil {
-		log.Fatalln(err)
+		log.Println(err)
 	}
-
-	s.Token = cfg.Discord.Token
-	s.AddHandler(bot.Alola)
-	s.AddHandler(bot.DefectVoiceChannel)
-	s.AddHandler(bot.DiskJockey)
-	s.AddHandler(bot.FoodPorn)
-	s.AddHandler(bot.JoinVoiceChannel)
-	s.AddHandler(bot.PlayMusic)
-	s.AddHandler(bot.StopMusic)
-	s.AddHandler(bot.Welcome)
-	s.AddHandler(bot.Wikipedia)
-
-	lock := make(chan error)
-	err = s.Open()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	panic(<-lock)
+	client.On(disgord.EvtMessageCreate,
+		filter.NotByBot,
+		bot.Alola,
+		bot.DefectVoiceChannel,
+		bot.DiskJockey,
+		bot.FoodPorn,
+		bot.JoinVoiceChannel,
+		bot.PlayMusic,
+		bot.StopMusic,
+		bot.Wikipedia)
+	client.On(disgord.EvtPresenceUpdate,
+		bot.Welcome)
 }

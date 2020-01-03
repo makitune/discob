@@ -3,7 +3,7 @@ package command
 import (
 	"strings"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
 	"github.com/makitune/discob/errr"
 )
 
@@ -12,8 +12,8 @@ var (
 	defaultDefectMessage = "See ya"
 )
 
-func (bot *Bot) DefectVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if !strings.Contains(m.Content, defectTrigger) {
+func (bot *Bot) DefectVoiceChannel(session disgord.Session, evt *disgord.MessageCreate) {
+	if !strings.Contains(evt.Message.Content, defectTrigger) {
 		return
 	}
 
@@ -21,22 +21,13 @@ func (bot *Bot) DefectVoiceChannel(s *discordgo.Session, m *discordgo.MessageCre
 		return
 	}
 
-	c, err := s.Channel(m.ChannelID)
-	if err != nil {
-		errr.Printf("%s\n", err)
-		return
-	}
+	bot.voice.Stop()
 
-	if bot.voice.Playing() {
-		if err := bot.voice.Stop(); err != nil {
-			errr.Printf("%s\n", err)
-			return
+	if err := bot.voice.Connection.Close(); err != nil {
+		bot.voice = nil
+		if e := bot.sendErrorMessage(evt.Ctx, session, evt.Message.ChannelID, err); e != nil {
+			errr.Printf("%s\n", e)
 		}
-	}
-
-	err = bot.voice.Connection.Disconnect()
-	if err != nil {
-		bot.sendErrorMessage(s, c, err)
 		return
 	}
 
@@ -46,5 +37,9 @@ func (bot *Bot) DefectVoiceChannel(s *discordgo.Session, m *discordgo.MessageCre
 	if err != nil {
 		msg = defaultDefectMessage
 	}
-	sendMessage(s, c, msg)
+
+	if err := bot.sendMessage(evt.Ctx, session, evt.Message.ChannelID, &msg, nil); err != nil {
+		errr.Printf("%s\n", err)
+		return
+	}
 }

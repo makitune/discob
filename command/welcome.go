@@ -5,34 +5,36 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
+	"github.com/makitune/discob/command/search"
 	"github.com/makitune/discob/errr"
 )
 
 const dwm = "Welcome to "
 
-func (bot *Bot) Welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
-	lc := bot.loginChans[p.User.ID]
-	if p.Status == discordgo.StatusOnline && lc == nil {
-		bot.loginChans[p.User.ID] = make(chan struct{})
-		bot.welcome(s, p)
-		bot.headsup(s, p)
+func (bot *Bot) Welcome(session disgord.Session, evt *disgord.PresenceUpdate) {
+	lc := bot.loginChans[evt.User.ID]
+
+	if evt.Status == "online" && lc == nil {
+		bot.loginChans[evt.User.ID] = make(chan struct{})
+		bot.welcome(session, evt)
+		bot.headsup(session, evt)
 	}
 
-	if p.Status == discordgo.StatusOffline && lc != nil {
+	if evt.Status == "offline" && lc != nil {
 		lc <- struct{}{}
-		delete(bot.loginChans, p.User.ID)
+		delete(bot.loginChans, evt.User.ID)
 	}
 }
 
-func (bot *Bot) welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
-	g, err := s.Guild(p.GuildID)
+func (bot *Bot) welcome(session disgord.Session, evt *disgord.PresenceUpdate) {
+	g, err := session.GetGuild(evt.Ctx, evt.GuildID)
 	if err != nil {
 		errr.Printf("%s\n", err)
 		return
 	}
 
-	c, err := topTextChannel(g)
+	ch, err := topTextChannel(g)
 	if err != nil {
 		errr.Printf("%s\n", err)
 		return
@@ -40,34 +42,44 @@ func (bot *Bot) welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 
 	wm, err := bot.welcomeMessage()
 	if err != nil {
-		wm = dwm + g.Name
+		wm = dwm + ch.Name
 	}
-
-	msg := p.User.Mention() + "\t" + wm
-	sendMessage(s, c, msg)
 
 	wk, err := bot.welcomeKeyword()
 	if err != nil {
+		errr.Printf("%s\n", err)
 		return
 	}
-	bot.sendImage(s, c, wk)
-}
+	msg := evt.User.Mention() + "\t" + wm
 
-func (bot *Bot) headsup(s *discordgo.Session, p *discordgo.PresenceUpdate) {
-	g, err := s.Guild(p.GuildID)
+	imgURL, err := search.SearchImage(wk, bot.config.Search)
 	if err != nil {
 		errr.Printf("%s\n", err)
 		return
 	}
 
-	c, err := topTextChannel(g)
+	err = bot.sendMessage(evt.Ctx, session, ch.ID, &msg, imgURL)
+	if err != nil {
+		errr.Printf("%s\n", err)
+		return
+	}
+}
+
+func (bot *Bot) headsup(session disgord.Session, evt *disgord.PresenceUpdate) {
+	g, err := session.GetGuild(evt.Ctx, evt.GuildID)
+	if err != nil {
+		errr.Printf("%s\n", err)
+		return
+	}
+
+	ch, err := topTextChannel(g)
 	if err != nil {
 		errr.Printf("%s\n", err)
 		return
 	}
 
 	t := time.NewTicker(1 * time.Hour)
-	u := p.User
+	u := evt.User
 	lc := bot.loginChans[u.ID]
 
 	for {
@@ -78,19 +90,26 @@ func (bot *Bot) headsup(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 				msg = msg + "\t" + m
 			}
 
-			sendMessage(s, c, msg)
+			imgURL, err := search.SearchImage(fpkws[rand.Intn(len(fpkws))], bot.config.Search)
+			if err != nil {
+				errr.Printf("%s\n", err)
+				return
+			}
 
-			max := len(fpkws)
-			bot.sendImage(s, c, fpkws[rand.Intn(max)])
+			err = bot.sendMessage(evt.Ctx, session, ch.ID, &msg, imgURL)
+			if err != nil {
+				errr.Printf("%s\n", err)
+				return
+			}
 		case <-lc:
 			return
 		}
 	}
 }
 
-func topTextChannel(guild *discordgo.Guild) (*discordgo.Channel, error) {
-	for _, c := range guild.Channels {
-		if c.Type == discordgo.ChannelTypeGuildText && c.Position == 0 {
+func topTextChannel(g *disgord.Guild) (*disgord.Channel, error) {
+	for _, c := range g.Channels {
+		if c.Type == disgord.ChannelTypeGuildText {
 			return c, nil
 		}
 	}
