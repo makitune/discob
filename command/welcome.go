@@ -18,7 +18,7 @@ func (bot *Bot) Welcome(session disgord.Session, evt *disgord.PresenceUpdate) {
 	if evt.Status == "online" && lc == nil {
 		bot.loginChans[evt.User.ID] = make(chan struct{})
 		bot.welcome(session, evt)
-		bot.headsup(session, evt)
+		go bot.headsup(session, evt)
 	}
 
 	if evt.Status == "offline" && lc != nil {
