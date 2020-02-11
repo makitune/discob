@@ -36,16 +36,6 @@ func (bot *Bot) PlayMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	err = search.DownloadMusic(y, bot.config.Search)
-	if err != nil {
-		bot.sendErrorMessage(s, c, err)
-		return
-	}
-
-	if len(y.FilePath) == 0 {
-		return
-	}
-
 	if bot.voice.Playing() {
 		if err := bot.voice.Stop(); err != nil {
 			errr.Printf("%s\n", err)
@@ -53,6 +43,10 @@ func (bot *Bot) PlayMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 	}
 
-	bot.voice.Youtube = y
-	bot.voice.Play()
+	if err := bot.voice.Play(y); err != nil {
+		bot.sendErrorMessage(s, c, err)
+	}
+
+	msg := "吟じます！\n" + y.Title
+	sendMessage(s, c, msg)
 }

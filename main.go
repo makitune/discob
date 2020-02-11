@@ -52,10 +52,10 @@ func main() {
 
 	s.Token = cfg.Discord.Token
 	s.AddHandler(bot.Alola)
-	s.AddHandler(bot.DefectVoiceChannel)
 	s.AddHandler(bot.DiskJockey)
 	s.AddHandler(bot.FoodPorn)
 	s.AddHandler(bot.JoinVoiceChannel)
+	s.AddHandler(bot.LeaveVoiceChannel)
 	s.AddHandler(bot.PlayMusic)
 	s.AddHandler(bot.StopMusic)
 	s.AddHandler(bot.Welcome)

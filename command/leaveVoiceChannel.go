@@ -12,7 +12,7 @@ var (
 	defaultDefectMessage = "See ya"
 )
 
-func (bot *Bot) DefectVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreate) {
+func (bot *Bot) LeaveVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreate) {
 	if !strings.Contains(m.Content, defectTrigger) {
 		return
 	}
