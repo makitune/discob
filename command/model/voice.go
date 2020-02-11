@@ -48,13 +48,16 @@ func (v *Voice) Play(y *Youtube) error {
 			select {
 			case <-v.stopChan:
 				return
+
 			default:
 				data, err := es.OpusFrame()
+				if err == io.EOF {
+					v.tearDown()
+					return
+				}
+
 				if err != nil {
-					if err != io.EOF {
-						errr.Printf("%s\n", err)
-						return
-					}
+					errr.Printf("%s\n", err)
 
 					if err = v.Stop(); err != nil {
 						errr.Printf("%s\n", err)
@@ -74,13 +77,17 @@ func (v *Voice) Stop() error {
 		return errors.New("not playing")
 	}
 
+	err := v.session.Stop()
 	v.stopChan <- struct{}{}
+	v.tearDown()
+	return err
+}
+
+func (v *Voice) tearDown() {
 	close(v.stopChan)
 	v.stopChan = nil
 	v.youtube = nil
 
-	err := v.session.Stop()
 	v.session.Cleanup()
 	v.session = nil
-	return err
 }
