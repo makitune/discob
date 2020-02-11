@@ -101,7 +101,7 @@ func (bot *Bot) joinVoiceChannelMessage() (string, error) {
 }
 
 func (bot *Bot) defectVoiceChannelMessage() (string, error) {
-	return any(bot.config.Command.DefectVoiceChannel.Messages)
+	return any(bot.config.Command.LeaveVoiceChannel.Messages)
 }
 
 func any(target []string) (string, error) {
