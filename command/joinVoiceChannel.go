@@ -4,7 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/bwmarrin/discordgo"
+	"github.com/andersfylling/disgord"
 	"github.com/makitune/discob/command/model"
 	"github.com/makitune/discob/errr"
 )
@@ -14,8 +14,8 @@ var (
 	defaultJoinMessage = "Here we go"
 )
 
-func (bot *Bot) JoinVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreate) {
-	if !strings.Contains(m.Content, joinTrigger) {
+func (bot *Bot) JoinVoiceChannel(session disgord.Session, evt *disgord.MessageCreate) {
+	if !strings.Contains(evt.Message.Content, joinTrigger) {
 		return
 	}
 
@@ -23,48 +23,42 @@ func (bot *Bot) JoinVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreat
 		return
 	}
 
-	if m.Author.Username == bot.config.Discord.UserName || m.Author.Bot {
-		return
-	}
-
-	c, err := s.Channel(m.ChannelID)
+	vChan, err := findVoiceChannel(session, evt)
 	if err != nil {
-		errr.Printf("%s\n", err)
+		bot.sendErrorMessage(evt.Ctx, session, evt.Message.ChannelID, err)
 		return
 	}
 
-	vChan, err := findVoiceChannel(s, c.GuildID)
+	connection, err := session.VoiceConnect(vChan.GuildID, vChan.ID)
 	if err != nil {
-		bot.sendErrorMessage(s, c, err)
+		if e := bot.sendErrorMessage(evt.Ctx, session, evt.Message.ChannelID, err); e != nil {
+			errr.Printf("%s\n", e)
+		}
 		return
 	}
 
-	connection, err := s.ChannelVoiceJoin(vChan.GuildID, vChan.ID, false, false)
-	if err != nil {
-		bot.sendErrorMessage(s, c, err)
-		return
-	}
-
-	bot.voice = &model.Voice{
-		Connection: connection,
-	}
+	bot.voice = model.New(connection)
 
 	msg, err := bot.joinVoiceChannelMessage()
 	if err != nil {
 		msg = defaultJoinMessage
 	}
-	sendMessage(s, c, msg)
+	if err := bot.sendMessage(evt.Ctx, session, evt.Message.ChannelID, &msg, nil); err != nil {
+		errr.Printf("%s\n", err)
+		return
+	}
+
 }
 
-func findVoiceChannel(s *discordgo.Session, guildID string) (*discordgo.Channel, error) {
-	g, err := s.Guild(guildID)
+func findVoiceChannel(s disgord.Session, evt *disgord.MessageCreate) (*disgord.Channel, error) {
+	chs, err := s.GetGuildChannels(evt.Ctx, evt.Message.GuildID)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, c := range g.Channels {
-		if c.Type == discordgo.ChannelTypeGuildVoice {
-			return c, nil
+	for _, ch := range chs {
+		if ch.Type == disgord.ChannelTypeGuildVoice {
+			return ch, nil
 		}
 	}
 

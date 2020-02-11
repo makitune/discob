@@ -5,8 +5,7 @@
   },
   "cse": {
     "key": "Search engine ID",
-    "id": "API key",
-    "outputDir": "/opt/discob"
+    "id": "API key"
   },
   "command": {
     "errormessage": "反応がない。。ただの屍のようだ・・・",
