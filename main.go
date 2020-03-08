@@ -51,6 +51,7 @@ func main() {
 	}
 
 	s.Token = cfg.Discord.Token
+	s.AddHandler(bot.Announce)
 	s.AddHandler(bot.Alola)
 	s.AddHandler(bot.DiskJockey)
 	s.AddHandler(bot.FoodPorn)
