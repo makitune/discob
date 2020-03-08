@@ -1,8 +1,10 @@
 package search
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"html"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -12,10 +14,14 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/bwmarrin/discordgo"
 	"github.com/makitune/discob/command/model"
 	"github.com/makitune/discob/config"
+	"github.com/saintfish/chardet"
+	"golang.org/x/net/html/charset"
 )
 
 var (
@@ -190,4 +196,68 @@ func SearchWikipediaURL(keyword string) (string, error) {
 func humanize(keyword string) (string, error) {
 	s := strings.Replace(keyword, "%25", "%", -1)
 	return url.QueryUnescape(s)
+}
+
+func SearchGameReleaseSchedule() (*string, error) {
+	res, err := http.Get("https://kakaku.com/game/release/")
+	if err != nil {
+		return nil, err
+	}
+
+	defer res.Body.Close()
+	buf, _ := ioutil.ReadAll(res.Body)
+
+	det := chardet.NewTextDetector()
+	detRslt, err := det.DetectBest(buf)
+	if err != nil {
+		return nil, err
+	}
+
+	br := bytes.NewReader(buf)
+	r, err := charset.NewReaderLabel(detRslt.Charset, br)
+	if err != nil {
+		return nil, err
+	}
+
+	doc, err := goquery.NewDocumentFromReader(r)
+	if err != nil {
+		return nil, err
+	}
+
+	ny, nw := time.Now().ISOWeek()
+	schedule := "機種・製品名 / メーカー / メーカー希望小売価格\n"
+
+	doc.Find("#titleSche > tbody > tr").Each(func(_ int, tr *goquery.Selection) {
+		td := tr.Children()
+		if td.HasClass("releaseLine") {
+			return
+		}
+
+		title := tr.Find("td.gameTitle").Text()
+		if title == html.UnescapeString("&nbsp;") || len(title) == 0 {
+			return
+		}
+
+		d := strings.Split(tr.Find("td.weekly").Text(), "（")[0]
+
+		if len(d) != 0 {
+			t, pe := time.Parse("2006年1月2日", d)
+			if pe != nil {
+				err = pe
+			}
+
+			y, w := t.ISOWeek()
+			if ny != y || nw+1 != w {
+				return
+			}
+			schedule = schedule + "\n" + d + "\n"
+		}
+		schedule = schedule + title + " / " + tr.Find("td.gameProduct").Text() + "  / " + tr.Find("td.gamePrice").Text() + "\n"
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &schedule, nil
 }
