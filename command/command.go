@@ -15,9 +15,10 @@ import (
 const dem = "Something bad happened"
 
 type Bot struct {
-	config     config.Config
-	loginChans map[string]chan struct{}
-	voice      *model.Voice
+	announceChans chan struct{}
+	config        config.Config
+	loginChans    map[string]chan struct{}
+	voice         *model.Voice
 }
 
 func New(cfg config.Config) (bot *Bot) {
