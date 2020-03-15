@@ -2,92 +2,43 @@ package model
 
 import (
 	"errors"
-	"io"
+	"os"
 
+	"github.com/bwmarrin/dgvoice"
 	"github.com/bwmarrin/discordgo"
-	"github.com/makitune/discob/errr"
-	"github.com/rylio/ytdl"
-	"github.com/yyewolf/dca-disgord"
 )
 
 type Voice struct {
 	Connection *discordgo.VoiceConnection
-	session    *dca.EncodeSession
 	stopChan   chan struct{}
-	youtube    *Youtube
+	Youtube    *Youtube
 }
 
 func (v *Voice) Playing() bool {
-	return v.stopChan != nil && v.youtube != nil
+	return v.stopChan != nil && v.Youtube != nil
 }
 
-func (v *Voice) Play(y *Youtube) error {
-	v.youtube = y
-	vi, err := ytdl.GetVideoInfo(y.UrlString())
-	if err != nil {
-		v.Stop()
-		return err
+func (v *Voice) Play() error {
+	if v.Youtube.FilePath == nil {
+		return errors.New("AudioFile Not Found")
 	}
-
-	format := vi.Formats.Extremes(ytdl.FormatAudioBitrateKey, true)[0]
-	downloadURL, err := vi.GetDownloadURL(format)
-	options := dca.StdEncodeOptions
-	options.RawOutput = true
-	options.Bitrate = 96
-	options.Application = dca.AudioApplicationLowDelay
-	es, err := dca.EncodeFile(downloadURL.String(), options)
-	if err != nil {
-		v.Stop()
-		return err
-	}
-
-	v.session = es
 	v.stopChan = make(chan struct{})
-	go func() {
-		for {
-			select {
-			case <-v.stopChan:
-				return
-
-			default:
-				data, err := es.OpusFrame()
-				if err == io.EOF {
-					v.tearDown()
-					return
-				}
-
-				if err != nil {
-					errr.Printf("%s\n", err)
-
-					if err = v.Stop(); err != nil {
-						errr.Printf("%s\n", err)
-						return
-					}
-				}
-
-				v.Connection.OpusSend <- data
-			}
-		}
-	}()
+	dgvoice.PlayAudioFile(v.Connection, *v.Youtube.FilePath, v.stopChan)
 	return nil
 }
 
 func (v *Voice) Stop() error {
-	if v.stopChan == nil {
-		return errors.New("not playing")
-	}
-
-	err := v.session.Stop()
-	v.stopChan <- struct{}{}
-	v.tearDown()
-	return err
-}
-
-func (v *Voice) tearDown() {
 	close(v.stopChan)
 	v.stopChan = nil
-	v.youtube = nil
 
-	v.session.Cleanup()
-	v.session = nil
+	if v.Youtube.FilePath != nil {
+		if _, err := os.Stat(*v.Youtube.FilePath); !os.IsNotExist(err) {
+			if err := os.Remove(*v.Youtube.FilePath); err != nil {
+				return err
+			}
+		}
+	}
+
+	v.Youtube = nil
+	return nil
 }

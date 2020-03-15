@@ -1,6 +1,7 @@
 package command
 
 import (
+	"os"
 	"strings"
 
 	"github.com/bwmarrin/discordgo"
@@ -36,6 +37,16 @@ func (bot *Bot) PlayMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
+	err = search.DownloadMusic(y, bot.config.Search)
+	if err != nil {
+		bot.sendErrorMessage(s, c, err)
+		return
+	}
+
+	if y.FilePath == nil {
+		return
+	}
+
 	if bot.voice.Playing() {
 		if err := bot.voice.Stop(); err != nil {
 			errr.Printf("%s\n", err)
@@ -43,10 +54,21 @@ func (bot *Bot) PlayMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
 		}
 	}
 
-	if err := bot.voice.Play(y); err != nil {
-		bot.sendErrorMessage(s, c, err)
-	}
-
 	msg := "吟じます！\n" + y.Title
 	sendMessage(s, c, msg)
+
+	bot.voice.Youtube = y
+	if err = bot.voice.Play(); err != nil {
+		errr.Printf("%s\n", err)
+	}
+
+	if y.FilePath == nil {
+		return
+	}
+
+	if _, err = os.Stat(*y.FilePath); !os.IsNotExist(err) {
+		if err := os.Remove(*y.FilePath); err != nil {
+			errr.Printf("%s\n", err)
+		}
+	}
 }
