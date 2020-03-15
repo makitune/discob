@@ -41,6 +41,8 @@ func (bot *Bot) Announce(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 }
 
 func announce(d time.Duration, stopC <-chan struct{}, handler func()) {
+	handler()
+
 	t := time.NewTicker(d)
 	for {
 		select {
