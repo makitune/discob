@@ -224,9 +224,11 @@ func SearchGameReleaseSchedule() (*string, error) {
 		return nil, err
 	}
 
-	ny, nw := time.Now().ISOWeek()
+	jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+	ny, nw := time.Now().In(jst).ISOWeek()
 	schedule := "機種・製品名 / メーカー / メーカー希望小売価格\n"
 
+	var isThisWeek bool
 	doc.Find("#titleSche > tbody > tr").Each(func(_ int, tr *goquery.Selection) {
 		td := tr.Children()
 		if td.HasClass("releaseLine") {
@@ -247,12 +249,14 @@ func SearchGameReleaseSchedule() (*string, error) {
 			}
 
 			y, w := t.ISOWeek()
-			if ny != y || nw+1 != w {
-				return
+			isThisWeek = ny == y && nw == w
+			if isThisWeek {
+				schedule = schedule + "\n" + d + "\n"
 			}
-			schedule = schedule + "\n" + d + "\n"
 		}
-		schedule = schedule + title + " / " + tr.Find("td.gameProduct").Text() + "  / " + tr.Find("td.gamePrice").Text() + "\n"
+		if isThisWeek {
+			schedule = schedule + title + " / " + tr.Find("td.gameProduct").Text() + "  / " + tr.Find("td.gamePrice").Text() + "\n"
+		}
 	})
 
 	if err != nil {
