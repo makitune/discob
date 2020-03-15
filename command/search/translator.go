@@ -8,5 +8,6 @@ func newYoutube(resp *youtubeSearchResponse) *model.Youtube {
 		Title:       item.Snippet.Title,
 		Description: item.Snippet.Description,
 		VideoID:     item.ID.VideoID,
+		FilePath:    nil,
 	}
 }

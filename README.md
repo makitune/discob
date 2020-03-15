@@ -8,6 +8,7 @@ Discob is a private bot for Discord using the [DiscordGo](https://github.com/bwm
   - Custom Search
   - Youtube Data
 - ffmpeg
+- youtube-dl
 
 ## Usage
 
@@ -20,7 +21,7 @@ discob -path config.json
 Usage on Discord.
 
 - alola  
-  Send a pokemon image known as an Alolan Form when a message contains "あろーら"  (meaning "Alola!").
+  Send a pokemon image known as an Alolan Form when a message contains "あろーら" (meaning "Alola!").
 - discjockey  
   Send a YouTube URL from the keyword following "@bot" when mentioning the bot is NOT joining a voice chat.
 - foodporn  
@@ -52,7 +53,8 @@ Create `config.json` file and specifies it at execute using this template:
   },
   "cse": {
     "id": "Search engine ID",
-    "key": "API key"
+    "key": "API key",
+    "outputDir": "/opt/discob"
   },
   "command": {
     "errormessage": "something bad happened",
