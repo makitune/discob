@@ -57,7 +57,6 @@ func main() {
 	s.AddHandler(bot.FoodPorn)
 	s.AddHandler(bot.JoinVoiceChannel)
 	s.AddHandler(bot.LeaveVoiceChannel)
-	s.AddHandler(bot.PlayMusic)
 	s.AddHandler(bot.StopMusic)
 	s.AddHandler(bot.Welcome)
 	s.AddHandler(bot.Wikipedia)
