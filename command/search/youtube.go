@@ -1,7 +1,6 @@
 package search
 
 import (
-	"fmt"
 	"math/rand"
 	"net/http"
 	"os"
@@ -104,7 +103,5 @@ func (y *Youtube) Download(m *model.Music) (*model.Music, error) {
 	}
 
 	m.FilePath = &path
-	fmt.Println(path)
-	fmt.Println(m)
 	return m, nil
 }
