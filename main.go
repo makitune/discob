@@ -9,6 +9,7 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/makitune/discob/command"
+	"github.com/makitune/discob/command/search"
 	"github.com/makitune/discob/config"
 )
 
@@ -44,7 +45,7 @@ func main() {
 		log.Fatalln(err)
 	}
 
-	bot := command.New(cfg)
+	bot := dependencyInject(cfg)
 	s, err := discordgo.New()
 	if err != nil {
 		log.Fatalln(err)
@@ -68,4 +69,12 @@ func main() {
 	}
 
 	panic(<-lock)
+}
+
+func dependencyInject(cfg config.Config) *command.Bot {
+	return &command.Bot{
+		Config:     cfg,
+		LoginChans: make(map[string]chan struct{}),
+		Repository: search.NewYoutube(cfg.Search),
+	}
 }

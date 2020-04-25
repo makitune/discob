@@ -15,7 +15,7 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if m.Author.Username == bot.config.Discord.UserName || m.Author.Bot {
+	if m.Author.Username == bot.Config.Discord.UserName || m.Author.Bot {
 		return
 	}
 

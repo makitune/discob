@@ -15,17 +15,11 @@ import (
 const dem = "Something bad happened"
 
 type Bot struct {
-	announceChans chan struct{}
-	config        config.Config
-	loginChans    map[string]chan struct{}
-	voice         *model.Voice
-}
-
-func New(cfg config.Config) (bot *Bot) {
-	return &Bot{
-		config:     cfg,
-		loginChans: make(map[string]chan struct{}),
-	}
+	AnnounceChans chan struct{}
+	Config        config.Config
+	LoginChans    map[string]chan struct{}
+	Voice         *model.Voice
+	Repository    model.Youtuber
 }
 
 func init() {
@@ -44,7 +38,7 @@ func (bot *Bot) sendErrorMessage(s *discordgo.Session, c *discordgo.Channel, err
 		errr.Printf("%s\n", err)
 	}
 
-	msg := bot.config.Command.ErrorMessage
+	msg := bot.Config.Command.ErrorMessage
 	if len(msg) == 0 {
 		msg = dem
 	}
@@ -55,7 +49,7 @@ func (bot *Bot) sendErrorMessage(s *discordgo.Session, c *discordgo.Channel, err
 }
 
 func (bot *Bot) sendImage(s *discordgo.Session, c *discordgo.Channel, keyword string) {
-	me, err := search.SearchImage(keyword, bot.config.Search)
+	me, err := search.SearchImage(keyword, bot.Config.Search)
 	if err != nil {
 		bot.sendErrorMessage(s, c, err)
 		return
@@ -73,7 +67,7 @@ func (bot *Bot) isMentioned(m *discordgo.MessageCreate) bool {
 	}
 
 	for _, mu := range m.Mentions {
-		if mu.Username == bot.config.Discord.UserName {
+		if mu.Username == bot.Config.Discord.UserName {
 			return true
 		}
 	}
@@ -82,27 +76,27 @@ func (bot *Bot) isMentioned(m *discordgo.MessageCreate) bool {
 }
 
 func (bot *Bot) foodPornMessage() (string, error) {
-	return any(bot.config.Command.FoodPorn.Messages)
+	return any(bot.Config.Command.FoodPorn.Messages)
 }
 
 func (bot *Bot) headsUpMessage() (string, error) {
-	return any(bot.config.Command.HeadsUp.Messages)
+	return any(bot.Config.Command.HeadsUp.Messages)
 }
 
 func (bot *Bot) welcomeKeyword() (string, error) {
-	return any(bot.config.Command.Welcome.Keywords)
+	return any(bot.Config.Command.Welcome.Keywords)
 }
 
 func (bot *Bot) welcomeMessage() (string, error) {
-	return any(bot.config.Command.Welcome.Messages)
+	return any(bot.Config.Command.Welcome.Messages)
 }
 
 func (bot *Bot) joinVoiceChannelMessage() (string, error) {
-	return any(bot.config.Command.JoinVoiceChannel.Messages)
+	return any(bot.Config.Command.JoinVoiceChannel.Messages)
 }
 
 func (bot *Bot) defectVoiceChannelMessage() (string, error) {
-	return any(bot.config.Command.LeaveVoiceChannel.Messages)
+	return any(bot.Config.Command.LeaveVoiceChannel.Messages)
 }
 
 func any(target []string) (string, error) {

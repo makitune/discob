@@ -16,15 +16,15 @@ func (bot *Bot) StopMusic(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	if !bot.voice.Playing() {
+	if !bot.Voice.Playing() {
 		return
 	}
 
-	if m.Author.Username == bot.config.Discord.UserName || m.Author.Bot {
+	if m.Author.Username == bot.Config.Discord.UserName || m.Author.Bot {
 		return
 	}
 
-	if err := bot.voice.Stop(); err != nil {
+	if err := bot.Voice.Stop(); err != nil {
 		errr.Printf("%s\n", err)
 		return
 	}

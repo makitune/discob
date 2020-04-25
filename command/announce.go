@@ -9,7 +9,7 @@ import (
 )
 
 func (bot *Bot) Announce(s *discordgo.Session, p *discordgo.PresenceUpdate) {
-	if bot.announceChans != nil {
+	if bot.AnnounceChans != nil {
 		return
 	}
 
@@ -29,9 +29,9 @@ func (bot *Bot) Announce(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 	n := time.Now().In(jst)
 	weekend := time.Date(n.Year(), n.Month(), n.Day()+(7-int(n.Weekday())), 0, 0, 0, 0, n.Location())
 
-	bot.announceChans = make(chan struct{})
+	bot.AnnounceChans = make(chan struct{})
 	time.AfterFunc(weekend.Sub(n), func() {
-		go announce(time.Hour*24*7, bot.announceChans, func() {
+		go announce(time.Hour*24*7, bot.AnnounceChans, func() {
 			jst := time.FixedZone("Asia/Tokyo", 9*60*60)
 			t := time.Now().In(jst)
 			msg, err := search.SearchGameReleaseSchedule(t, t.AddDate(0, 0, 6))
