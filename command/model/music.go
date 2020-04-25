@@ -1,7 +1,7 @@
 package model
 
 import (
-	"path"
+	"net/url"
 	"strings"
 )
 
@@ -17,7 +17,12 @@ func (m *Music) Message() string {
 }
 
 func (m *Music) URL() string {
-	return path.Join("https://youtu.be", m.VideoID)
+	u := url.URL{
+		Scheme: "https",
+		Host:   "youtu.be",
+		Path:   m.VideoID,
+	}
+	return u.String()
 }
 
 func (m *Music) FileName() string {
