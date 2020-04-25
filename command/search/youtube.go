@@ -1,14 +1,13 @@
 package search
 
 import (
-	"encoding/json"
-	"errors"
 	"fmt"
-	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"os"
 	"os/exec"
 	"path/filepath"
+	"time"
 
 	"github.com/makitune/discob/command/model"
 	"github.com/makitune/discob/command/search/client/youtube"
@@ -20,6 +19,7 @@ type Youtube struct {
 }
 
 func NewYoutube(cfg config.Search) *Youtube {
+	rand.Seed(time.Now().Unix())
 	return &Youtube{cfg: cfg}
 }
 
@@ -31,20 +31,9 @@ func (y *Youtube) Item(keyword string) (*model.Music, error) {
 		return nil, err
 	}
 
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
+	r, err := req.Parse(resp)
 	if err != nil {
 		return nil, err
-	}
-
-	r := new(youtube.YoutubeSearchResponse)
-	err = json.Unmarshal(body, r)
-	if err != nil {
-		return nil, err
-	}
-
-	if len(r.Items) == 0 {
-		return nil, errors.New("No results found in Youtube")
 	}
 
 	item := &r.Items[0]
@@ -55,8 +44,26 @@ func (y *Youtube) Item(keyword string) (*model.Music, error) {
 	}, nil
 }
 
-func (y *Youtube) PlayListItem() (*model.Music, error) {
-	return nil, nil
+func (y *Youtube) RecommendedItem() (*model.Music, error) {
+	req := youtube.NewPlaylistItems(y.cfg)
+	u := req.URL()
+	resp, err := http.Get(u.String())
+	if err != nil {
+		return nil, err
+	}
+
+	r, err := req.Parse(resp)
+	if err != nil {
+		return nil, err
+	}
+
+	index := rand.Intn(len(r.Items))
+	item := &r.Items[index]
+	return &model.Music{
+		Title:       item.Snippet.Title,
+		Description: item.Snippet.Description,
+		VideoID:     item.ContentDetails.VideoID,
+	}, nil
 }
 
 func (y *Youtube) Download(m *model.Music) (*model.Music, error) {

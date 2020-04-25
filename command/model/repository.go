@@ -6,6 +6,6 @@ type Messanger interface {
 
 type Youtuber interface {
 	Item(keyword string) (*Music, error)
-	PlayListItem() (*Music, error)
+	RecommendedItem() (*Music, error)
 	Download(m *Music) (*Music, error)
 }
