@@ -20,7 +20,7 @@ type PlaylistItems struct {
 func NewPlaylistItems(cfg config.Search) *PlaylistItems {
 	q := url.Values{}
 	q.Add("key", cfg.Key)
-	q.Add("part", "id")
+	q.Add("part", "snippet,contentDetails")
 	q.Add("playlistId", "RDCLAK5uy_m1h6RaRmM8e_3k7ec4ZVJzfo2pXdLrY_k")
 	q.Add("maxResults", "50")
 
