@@ -27,7 +27,13 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 	start := strings.Index(m.Content, "<")
 	end := strings.Index(m.Content, ">")
 	keyword := m.Content[:start] + m.Content[end+1:]
-	mic, err := bot.Repository.Item(keyword)
+
+	var mic *model.Music
+	if strings.EqualFold(strings.TrimSpace(keyword), "おぬぬめ") {
+		mic, err = bot.Repository.RecommendedItem()
+	} else {
+		mic, err = bot.Repository.Item(keyword)
+	}
 	if err != nil {
 		bot.sendErrorMessage(s, c, err)
 		return
