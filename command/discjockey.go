@@ -6,7 +6,6 @@ import (
 
 	"github.com/bwmarrin/discordgo"
 	"github.com/makitune/discob/command/model"
-	"github.com/makitune/discob/command/search"
 	"github.com/makitune/discob/errr"
 )
 
@@ -28,56 +27,51 @@ func (bot *Bot) DiskJockey(s *discordgo.Session, m *discordgo.MessageCreate) {
 	start := strings.Index(m.Content, "<")
 	end := strings.Index(m.Content, ">")
 	keyword := m.Content[:start] + m.Content[end+1:]
-	y, err := search.SearchYoutube(keyword, bot.config.Search)
+	mic, err := bot.Repository.Item(keyword)
 	if err != nil {
 		bot.sendErrorMessage(s, c, err)
 		return
 	}
 
-	if bot.voice == nil {
-		postMusic(s, c, y)
-	} else {
-		bot.playMusic(s, c, y)
+	if bot.Voice == nil {
+		sendMessage(s, c, mic.Message())
+		return
 	}
-}
 
-func postMusic(s *discordgo.Session, c *discordgo.Channel, y *model.Youtube) {
-	msg := strings.Join([]string{y.Title, y.Description, y.UrlString()}, "\n")
-	sendMessage(s, c, msg)
-}
-
-func (bot *Bot) playMusic(s *discordgo.Session, c *discordgo.Channel, y *model.Youtube) {
-	err := search.DownloadMusic(y, bot.config.Search)
+	err = bot.playMusic(s, c, mic)
 	if err != nil {
 		bot.sendErrorMessage(s, c, err)
 		return
 	}
+}
 
-	if y.FilePath == nil {
-		return
+func (bot *Bot) playMusic(s *discordgo.Session, c *discordgo.Channel, m *model.Music) error {
+	music, err := bot.Repository.Download(m)
+	if err != nil {
+		return err
 	}
 
-	if bot.voice.Playing() {
-		if err := bot.voice.Stop(); err != nil {
-			errr.Printf("%s\n", err)
-			return
+	if bot.Voice.Playing() {
+		if err := bot.Voice.Stop(); err != nil {
+			return err
 		}
 	}
 
-	postMusic(s, c, y)
+	sendMessage(s, c, music.Message())
 
-	bot.voice.Youtube = y
-	if err = bot.voice.Play(); err != nil {
-		errr.Printf("%s\n", err)
+	if err = bot.Voice.Play(music); err != nil {
+		return err
 	}
 
-	if y.FilePath == nil {
-		return
+	if music.FilePath == nil {
+		return nil
 	}
 
-	if _, err = os.Stat(*y.FilePath); !os.IsNotExist(err) {
-		if err := os.Remove(*y.FilePath); err != nil {
-			errr.Printf("%s\n", err)
+	if _, err = os.Stat(*music.FilePath); !os.IsNotExist(err) {
+		if err := os.Remove(*music.FilePath); err != nil {
+			return err
 		}
 	}
+
+	return nil
 }
