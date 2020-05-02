@@ -93,6 +93,7 @@ func (y *Youtube) Download(m *model.Music) (*model.Music, error) {
 		"m4a",
 		"-o",
 		path,
+		"--no-cache-dir",
 	}
 
 	args := append(options, m.URL())
