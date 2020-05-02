@@ -12,16 +12,16 @@ import (
 const dwm = "Welcome to "
 
 func (bot *Bot) Welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
-	lc := bot.loginChans[p.User.ID]
+	lc := bot.LoginChans[p.User.ID]
 	if p.Status == discordgo.StatusOnline && lc == nil {
-		bot.loginChans[p.User.ID] = make(chan struct{})
+		bot.LoginChans[p.User.ID] = make(chan struct{})
 		bot.welcome(s, p)
 		bot.headsup(s, p)
 	}
 
 	if p.Status == discordgo.StatusOffline && lc != nil {
 		lc <- struct{}{}
-		delete(bot.loginChans, p.User.ID)
+		delete(bot.LoginChans, p.User.ID)
 	}
 }
 
@@ -68,7 +68,7 @@ func (bot *Bot) headsup(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 
 	t := time.NewTicker(1 * time.Hour)
 	u := p.User
-	lc := bot.loginChans[u.ID]
+	lc := bot.LoginChans[u.ID]
 
 	for {
 		select {

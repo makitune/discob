@@ -32,7 +32,7 @@ func (bot *Bot) FoodPorn(s *discordgo.Session, m *discordgo.MessageCreate) {
 	for _, trg := range fptrg {
 		if strings.Contains(m.Content, trg) {
 			user := m.Author
-			if user.Username == bot.config.Discord.UserName || user.Bot {
+			if user.Username == bot.Config.Discord.UserName || user.Bot {
 				return
 			}
 

@@ -19,11 +19,11 @@ func (bot *Bot) JoinVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreat
 		return
 	}
 
-	if bot.voice != nil {
+	if bot.Voice != nil {
 		return
 	}
 
-	if m.Author.Username == bot.config.Discord.UserName || m.Author.Bot {
+	if m.Author.Username == bot.Config.Discord.UserName || m.Author.Bot {
 		return
 	}
 
@@ -45,7 +45,7 @@ func (bot *Bot) JoinVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreat
 		return
 	}
 
-	bot.voice = &model.Voice{
+	bot.Voice = &model.Voice{
 		Connection: connection,
 	}
 

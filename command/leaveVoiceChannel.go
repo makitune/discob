@@ -17,7 +17,7 @@ func (bot *Bot) LeaveVoiceChannel(s *discordgo.Session, m *discordgo.MessageCrea
 		return
 	}
 
-	if bot.voice == nil {
+	if bot.Voice == nil {
 		return
 	}
 
@@ -27,20 +27,20 @@ func (bot *Bot) LeaveVoiceChannel(s *discordgo.Session, m *discordgo.MessageCrea
 		return
 	}
 
-	if bot.voice.Playing() {
-		if err := bot.voice.Stop(); err != nil {
+	if bot.Voice.Playing() {
+		if err := bot.Voice.Stop(); err != nil {
 			errr.Printf("%s\n", err)
 			return
 		}
 	}
 
-	err = bot.voice.Connection.Disconnect()
+	err = bot.Voice.Connection.Disconnect()
 	if err != nil {
 		bot.sendErrorMessage(s, c, err)
 		return
 	}
 
-	bot.voice = nil
+	bot.Voice = nil
 
 	msg, err := bot.defectVoiceChannelMessage()
 	if err != nil {

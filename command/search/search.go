@@ -9,8 +9,6 @@ import (
 	"math/rand"
 	"net/http"
 	"net/url"
-	"os"
-	"os/exec"
 	"path"
 	"path/filepath"
 	"strconv"
@@ -70,85 +68,6 @@ func SearchImage(keyword string, cfg config.Search) (*discordgo.MessageEmbed, er
 			URL: resp.Items[num].Link,
 		},
 	}, nil
-}
-
-func SearchYoutube(keyword string, cfg config.Search) (*model.Youtube, error) {
-	query := url.Values{}
-	query.Add("key", cfg.Key)
-	query.Add("type", "video")
-	query.Add("part", "snippet")
-	query.Add("maxResults", "1")
-	query.Add("q", keyword)
-
-	u := url.URL{
-		Scheme:   "https",
-		Host:     "www.googleapis.com",
-		Path:     "/youtube/v3/search",
-		RawQuery: query.Encode(),
-	}
-	res, err := http.Get(u.String())
-	if err != nil {
-		return nil, err
-	}
-
-	defer res.Body.Close()
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		return nil, err
-	}
-
-	resp := new(youtubeSearchResponse)
-	err = json.Unmarshal(body, resp)
-	if err != nil {
-		return nil, err
-	}
-
-	if len(resp.Items) == 0 {
-		return nil, errors.New("No results found in Youtube")
-	}
-
-	return newYoutube(resp), nil
-}
-
-func DownloadMusic(y *model.Youtube, cfg config.Search) error {
-	cmd, err := exec.LookPath("youtube-dl")
-	if err != nil {
-		return err
-	}
-
-	_, err = exec.LookPath("ffmpeg")
-	if err != nil {
-		return err
-	}
-
-	dir, err := outputDir(cfg)
-	if err != nil {
-		return err
-	}
-
-	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		if err = os.Mkdir(dir, 0755); err != nil {
-			return err
-		}
-	}
-
-	filename := y.VideoID + ".m4a"
-	path := filepath.Join(dir, filename)
-	options := []string{
-		"-f",
-		"bestaudio[ext=m4a]",
-		"-o",
-		path,
-	}
-
-	args := append(options, y.UrlString())
-	err = exec.Command(cmd, args...).Run()
-	if err != nil {
-		return err
-	}
-
-	y.FilePath = &path
-	return nil
 }
 
 func outputDir(cfg config.Search) (string, error) {

@@ -11,19 +11,21 @@ import (
 type Voice struct {
 	Connection *discordgo.VoiceConnection
 	stopChan   chan struct{}
-	Youtube    *Youtube
+	music      *Music
 }
 
 func (v *Voice) Playing() bool {
-	return v.stopChan != nil && v.Youtube != nil
+	return v.stopChan != nil && v.music != nil
 }
 
-func (v *Voice) Play() error {
-	if v.Youtube.FilePath == nil {
-		return errors.New("AudioFile Not Found")
+func (v *Voice) Play(m *Music) error {
+	if m.FilePath == nil {
+		return errors.New("audioFile not found")
 	}
+
+	v.music = m
 	v.stopChan = make(chan struct{})
-	dgvoice.PlayAudioFile(v.Connection, *v.Youtube.FilePath, v.stopChan)
+	dgvoice.PlayAudioFile(v.Connection, *v.music.FilePath, v.stopChan)
 	return nil
 }
 
@@ -31,14 +33,14 @@ func (v *Voice) Stop() error {
 	close(v.stopChan)
 	v.stopChan = nil
 
-	if v.Youtube.FilePath != nil {
-		if _, err := os.Stat(*v.Youtube.FilePath); !os.IsNotExist(err) {
-			if err := os.Remove(*v.Youtube.FilePath); err != nil {
+	if v.music.FilePath != nil {
+		if _, err := os.Stat(*v.music.FilePath); !os.IsNotExist(err) {
+			if err := os.Remove(*v.music.FilePath); err != nil {
 				return err
 			}
 		}
 	}
 
-	v.Youtube = nil
+	v.music = nil
 	return nil
 }

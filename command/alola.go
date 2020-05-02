@@ -26,7 +26,7 @@ func (bot *Bot) Alola(s *discordgo.Session, m *discordgo.MessageCreate) {
 	}
 
 	user := m.Author
-	if user.Username == bot.config.Discord.UserName || user.Bot {
+	if user.Username == bot.Config.Discord.UserName || user.Bot {
 		return
 	}
 
