@@ -13,6 +13,7 @@ const dwm = "Welcome to "
 
 func (bot *Bot) Welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 	lc := bot.LoginChans[p.User.ID]
+
 	if p.Status == discordgo.StatusOnline && lc == nil {
 		bot.LoginChans[p.User.ID] = make(chan struct{})
 		bot.welcome(s, p)
@@ -26,13 +27,19 @@ func (bot *Bot) Welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 }
 
 func (bot *Bot) welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
-	g, err := s.Guild(p.GuildID)
+	st, err := s.GuildChannels(p.GuildID)
 	if err != nil {
 		errr.Printf("%s\n", err)
 		return
 	}
 
-	c, err := topTextChannel(g)
+	c, err := topTextChannel(st)
+	if err != nil {
+		errr.Printf("%s\n", err)
+		return
+	}
+
+	g, err := s.Guild(p.GuildID)
 	if err != nil {
 		errr.Printf("%s\n", err)
 		return
@@ -54,13 +61,13 @@ func (bot *Bot) welcome(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 }
 
 func (bot *Bot) headsup(s *discordgo.Session, p *discordgo.PresenceUpdate) {
-	g, err := s.Guild(p.GuildID)
+	st, err := s.GuildChannels(p.GuildID)
 	if err != nil {
 		errr.Printf("%s\n", err)
 		return
 	}
 
-	c, err := topTextChannel(g)
+	c, err := topTextChannel(st)
 	if err != nil {
 		errr.Printf("%s\n", err)
 		return
@@ -88,8 +95,8 @@ func (bot *Bot) headsup(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 	}
 }
 
-func topTextChannel(guild *discordgo.Guild) (*discordgo.Channel, error) {
-	for _, c := range guild.Channels {
+func topTextChannel(st []*discordgo.Channel) (*discordgo.Channel, error) {
+	for _, c := range st {
 		if c.Type == discordgo.ChannelTypeGuildText && c.Position == 0 {
 			return c, nil
 		}

@@ -57,12 +57,12 @@ func (bot *Bot) JoinVoiceChannel(s *discordgo.Session, m *discordgo.MessageCreat
 }
 
 func findVoiceChannel(s *discordgo.Session, guildID string) (*discordgo.Channel, error) {
-	g, err := s.Guild(guildID)
+	st, err := s.GuildChannels(guildID)
 	if err != nil {
 		return nil, err
 	}
 
-	for _, c := range g.Channels {
+	for _, c := range st {
 		if c.Type == discordgo.ChannelTypeGuildVoice {
 			return c, nil
 		}

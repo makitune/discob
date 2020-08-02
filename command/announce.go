@@ -13,13 +13,13 @@ func (bot *Bot) Announce(s *discordgo.Session, p *discordgo.PresenceUpdate) {
 		return
 	}
 
-	g, err := s.Guild(p.GuildID)
+	st, err := s.GuildChannels(p.GuildID)
 	if err != nil {
 		errr.Printf("%s\n", err)
 		return
 	}
 
-	c, err := topTextChannel(g)
+	c, err := topTextChannel(st)
 	if err != nil {
 		errr.Printf("%s\n", err)
 		return
