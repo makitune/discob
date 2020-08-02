@@ -10,7 +10,7 @@ import (
 
 type Voice struct {
 	Connection *discordgo.VoiceConnection
-	stopChan   chan struct{}
+	stopChan   chan bool
 	music      *Music
 }
 
@@ -24,7 +24,7 @@ func (v *Voice) Play(m *Music) error {
 	}
 
 	v.music = m
-	v.stopChan = make(chan struct{})
+	v.stopChan = make(chan bool)
 	dgvoice.PlayAudioFile(v.Connection, *v.music.FilePath, v.stopChan)
 	return nil
 }
