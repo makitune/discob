@@ -14,12 +14,12 @@ import (
 )
 
 var (
-	path = flag.String("path", "config.json", "Config file path")
+	cfgOption = flag.String("config", "config.json", "Config file path")
 )
 
 func main() {
 	flag.Parse()
-	fi, err := os.Stat(*path)
+	fi, err := os.Stat(*cfgOption)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -28,7 +28,7 @@ func main() {
 		log.Fatalf("%s is directory", fi.Name())
 	}
 
-	f, err := os.Open(*path)
+	f, err := os.Open(*cfgOption)
 	if err != nil {
 		log.Fatalln(err)
 	}
