@@ -20,11 +20,11 @@ type ReleaseSchedule interface {
 type GameReleaseSchedule struct {
 	start time.Time
 	end   time.Time
-	grs   []Release
+	rs    []Release
 }
 
-func NewGameReleaseSchedule(start time.Time, end time.Time, grs []Release) GameReleaseSchedule {
-	return GameReleaseSchedule{start, end, grs}
+func NewGameReleaseSchedule(start time.Time, end time.Time, rs []Release) GameReleaseSchedule {
+	return GameReleaseSchedule{start, end, rs}
 }
 
 func (grs *GameReleaseSchedule) Title() string {
@@ -33,5 +33,5 @@ func (grs *GameReleaseSchedule) Title() string {
 }
 
 func (grs *GameReleaseSchedule) Releases() []Release {
-	return grs.grs
+	return grs.rs
 }

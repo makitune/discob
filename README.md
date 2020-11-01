@@ -22,6 +22,8 @@ Usage on Discord.
 
 - alola  
   Send a pokemon image known as an Alolan Form when a message contains "あろーら" (meaning "Alola!").
+- announce  
+  Send the game release schedule on kakaku.com on Sunday.
 - discjockey  
   Send a YouTube URL from the keyword following "@bot" when mentioning the bot is NOT joining a voice chat.
 - foodporn  
