@@ -7,8 +7,8 @@ Discob is a private bot for Discord using the [DiscordGo](https://github.com/bwm
 - Google APIs
   - Custom Search
   - Youtube Data
-- ffmpeg
-- youtube-dl
+- ffmpeg: 4.3.1
+- youtube-dl: 2020.11.01.1
 
 ## Usage
 
