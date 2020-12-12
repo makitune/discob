@@ -13,7 +13,7 @@ Discob is a private bot for Discord using the [DiscordGo](https://github.com/bwm
 ## Usage
 
 ```console
-discob -path config.json
+discob -config config.json
 ```
 
 ### Commands
