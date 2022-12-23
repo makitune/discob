@@ -102,7 +102,7 @@ func (bot *Bot) defectVoiceChannelMessage() (string, error) {
 func any(target []string) (string, error) {
 	max := len(target)
 	if max == 0 {
-		return "", errors.New("Not configuration")
+		return "", errors.New("not configuration")
 	}
 	return target[rand.Intn(max)], nil
 }

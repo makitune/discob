@@ -102,5 +102,5 @@ func topTextChannel(st []*discordgo.Channel) (*discordgo.Channel, error) {
 		}
 	}
 
-	return nil, errors.New("Text Channel not found")
+	return nil, errors.New("text Channel not found")
 }
