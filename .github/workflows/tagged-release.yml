@@ -21,7 +21,7 @@ jobs:
           go-version: 1.19
 
       - name: Build
-        run: go build -v -o "discob_$GOOS_$GOARCH" .
+        run: go build -v -o "discob_${{  github.ref_name }}_${GOOS}_${GOARCH}" .
 
       - name: Create Release
         uses: softprops/action-gh-release@v1
