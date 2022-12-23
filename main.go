@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"flag"
-	"io/ioutil"
+	"io"
 	"log"
 	"os"
 
@@ -34,7 +34,7 @@ func main() {
 	}
 	defer f.Close()
 
-	data, err := ioutil.ReadAll(f)
+	data, err := io.ReadAll(f)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -46,7 +46,7 @@ func main() {
 	}
 
 	bot := dependencyInject(cfg)
-	s, err := discordgo.New()
+	s, err := discordgo.New(cfg.Discord.Token)
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -58,6 +58,7 @@ func main() {
 	s.AddHandler(bot.FoodPorn)
 	s.AddHandler(bot.JoinVoiceChannel)
 	s.AddHandler(bot.LeaveVoiceChannel)
+	s.AddHandler(bot.Paldea)
 	s.AddHandler(bot.StopMusic)
 	s.AddHandler(bot.Welcome)
 	s.AddHandler(bot.Wikipedia)

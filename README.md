@@ -7,13 +7,13 @@ Discob is a private bot for Discord using the [DiscordGo](https://github.com/bwm
 - Google APIs
   - Custom Search
   - Youtube Data
-- ffmpeg: 4.3.1
-- youtube-dl: 2020.11.01.1
+- ffmpeg
+- youtube-dl
 
 ## Usage
 
 ```console
-discob -path config.json
+discob -config config.json
 ```
 
 ### Commands
@@ -21,7 +21,7 @@ discob -path config.json
 Usage on Discord.
 
 - alola  
-  Send a pokemon image known as an Alolan Form when a message contains "あろーら" (meaning "Alola!").
+  Send a pokemon image known as an Alolan Form when a message is "あろーら" (meaning "Alola!").
 - announce  
   Send the game release schedule on kakaku.com on Sunday.
 - discjockey  
@@ -34,6 +34,8 @@ Usage on Discord.
   Join top voice channel and send a joinVoiceChannel message in config.json when a message contains "かもーん" (meaning "Come on").
 - leaveVoiceChannel  
   Leave voice channel and send a leaveVoiceChannel message in config.json when a message contains "あでゅー" (meaning "Goodbye").
+- paldea
+  Send a image related to Iono when a message is "おはこんハロチャオ" (meaning "’Ello, ’ello, hola! Ciao and bonjour!").
 - playMusic  
   Play a music from the keyword following "@bot" when mentioning the bot is joining a voice chat.
 - stopMusic  
