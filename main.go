@@ -46,7 +46,7 @@ func main() {
 	}
 
 	bot := dependencyInject(cfg)
-	s, err := discordgo.New()
+	s, err := discordgo.New(cfg.Discord.Token)
 	if err != nil {
 		log.Fatalln(err)
 	}
