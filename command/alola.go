@@ -8,16 +8,24 @@ import (
 )
 
 var pokemons = []string{
-	"アローラロコン",
-	"アローラニャース",
-	"アローラライチュウ",
-	"アローラサンドパン",
-	"アローラガラガラ",
-	"アローラコラッタ",
-	"アローラダグトリオ",
-	"アローラベトベトン",
-	"アローラゴローン",
-	"アローラナッシー",
+	"コラッタ",
+	"ラッタ",
+	"ライチュウ",
+	"サンド",
+	"サンドパン",
+	"ロコン",
+	"キュウコン",
+	"ディグダ",
+	"ダグトリオ",
+	"ニャース",
+	"ペルシアン",
+	"イシツブテ",
+	"ゴローン",
+	"ゴローニャ",
+	"ベトベター",
+	"ベトベトン",
+	"ナッシー",
+	"ガラガラ",
 }
 
 func (bot *Bot) Alola(s *discordgo.Session, m *discordgo.MessageCreate) {
@@ -36,5 +44,5 @@ func (bot *Bot) Alola(s *discordgo.Session, m *discordgo.MessageCreate) {
 		return
 	}
 
-	bot.sendImage(s, c, pokemons[rand.Intn(len(pokemons))])
+	bot.sendImage(s, c, "アローラ"+pokemons[rand.Intn(len(pokemons))])
 }
