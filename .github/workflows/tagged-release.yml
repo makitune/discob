@@ -6,7 +6,7 @@ on:
       - "v*"
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
     env:
       GOOS: linux
@@ -23,10 +23,6 @@ jobs:
       - name: Build
         run: go build -v -o "discob_$GOOS_$GOARCH" .
 
-  release:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
